@@ -5,10 +5,8 @@
  * @param {*} opction   //配置
  * @param {*} ShowConfig   //最终显示的配置
  */
-import { default_config } from '../default_config'
 
 let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
-    console.log(ShowConfig)
     let bg_group = new zrender.Group(),
         grid_config = ShowConfig.grid,
         box = ShowConfig.box,

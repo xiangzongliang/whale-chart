@@ -5,7 +5,7 @@
 import zrender from 'zrender'
 import { random } from './util/algorithms'
 import { default_config } from './util/default_config'
-import { render_grid,render_axis } from './util/render'
+import { render_grid,render_axis,chart_lines } from './util/render'
 export default {
     data(){
         return{
@@ -43,10 +43,12 @@ export default {
         renderAll(){
             let _axis = render_axis(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
             let _grid = render_grid(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
+            let _chart = chart_lines(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
 
 
             this.RAW_OBJ.add(_grid)
             this.RAW_OBJ.add(_axis)
+            this.RAW_OBJ.add(_chart)
         },
     }
 }

@@ -2,12 +2,19 @@
  * 默认配置文件
  */
 let default_config = {
+    toPX:(val)=>{ //这是一个计算公式 将所有配置的值经过计算 得出 px 的单位 
+        return val
+    },
     init:{
         renderer:'canavs',
         devicePixelRatio:2,
         width: 'auto',
-        height: 400,
+        height: 300,
         autoWidth:false, //当浏览器窗口宽度发生变化时,图表宽度自动变化 默认 false 当宽度值为auto的时候该属性生效
+    },
+    chartData:{
+        rows:[],
+        columns:[]
     },
 
     box:{

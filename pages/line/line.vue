@@ -12,23 +12,32 @@ export default {
                 //数据集合
                 chartData:{
                     //需要展示成线的key
-                    columns:['key'],
+                    columns:[{
+                        key:'key',
+                    },{
+                        key:'calc',
+                    }],
                     //数据集合
                     rows:[{
                         date:'2019-07-03',
                         key:100,
                         val:1029,
-                        calc:234.34
+                        calc:1000
                     },{
                         date:'2019-07-04',
                         key:200,
                         val:3782,
-                        calc:-7891
+                        calc:-789
                     },{
                         date:'2019-07-05',
                         key:120,
                         val:897,
-                        calc:8912
+                        calc:891
+                    },{
+                        date:'2019-07-06',
+                        key:180,
+                        val:897,
+                        calc:891
                     }]
                 },
                 axis:{
