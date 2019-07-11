@@ -41,14 +41,15 @@ export default {
     methods:{
         //所有的形状渲染
         renderAll(){
+            let _chart = chart_lines(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
             let _axis = render_axis(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
             let _grid = render_grid(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
-            let _chart = chart_lines(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
 
 
-            this.RAW_OBJ.add(_grid)
-            this.RAW_OBJ.add(_axis)
+            
             this.RAW_OBJ.add(_chart)
+            this.RAW_OBJ.add(_axis)
+            this.RAW_OBJ.add(_grid)
         },
     }
 }

@@ -1,4 +1,3 @@
-import { default_config } from '../default_config'
 /**
  * 渲染轴线
  * @param {*} zrender 
@@ -36,36 +35,40 @@ let render_axis = (zrender,RAW_OBJ,opction,ShowConfig) =>{
  */
 let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
     let bottom_group = new zrender.Group(),
-        box = ShowConfig.box;
+        box = ShowConfig.box,
+        x_buttom = ShowConfig.axis.X.bottom,
+        _diff = ShowConfig._diff
 
+    let zero_axis = (_diff.height - box.top - box.bottom) * (_diff.max / (_diff.abs_max + _diff.abs_min)) + box.top
+    
+        //X 轴
     let btm_line = new zrender.Line({
         shape:{
             x1:box.left,
-            y1:config.canvas_height - box.bottom,
+            y1:zero_axis,// config.canvas_height - box.bottom,
             x2:config.canvas_width,
-            y2:config.canvas_height - box.bottom
+            y2:zero_axis,//config.canvas_height - box.bottom
         },
-        style:{
-            stroke: "#cccccc",
-            lineWidth: 1,
-            lineDash: null
-        }
+        style:x_buttom.lineStyle
     })
     bottom_group.add(btm_line)
 
+
+
+
     //渲染文字
-    for(let rbx=0; rbx<3; rbx++){
+    for(let rbx=0; rbx<2; rbx++){
         let textAlign = "center"
         if(rbx == 0){
             textAlign = "left"
         }
-        if(rbx == 2){
+        if(rbx == 1){
             textAlign = "right"
         }
 
         let bottom_text = new zrender.Rect({
             shape:{
-                x:rbx * config.canvas_width / 2,
+                x:rbx * config.canvas_width / 1,
                 y:config.canvas_height
             },
             style:{
@@ -114,7 +117,7 @@ let render_left = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
                 y:(config.canvas_height-box.top-box.bottom) / h_num * hi + box.top
             },
             style:{
-                text:'200%',
+                text:'xx%',
                 fontWeight:400,
                 fontSize:18,
                 textFill:"#666666",
@@ -132,7 +135,7 @@ let render_left = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
 
 
 
-    // left_group.add(left_line)
+    left_group.add(left_line)
 
     return left_group
 

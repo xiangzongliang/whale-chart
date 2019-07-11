@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "APP_ENV=dev webpack-dev-server --config core/dev.js",
         "prd": "APP_ENV=build webpack --config core/build.js",
-        "build": "APP_ENV=build webpack --config core/build.js",
+        "build": "APP_ENV=build webpack NODE_ENV='production' --config core/build.js",
         "lint": "eslint --fix */*.vue *.js",
         "used": "APP_ENV=build webpack --display-used-exports --display-optimization-bailout --config core/build.js",
         "test:whale": "jest tests/whale.config.test.js && npm run build"

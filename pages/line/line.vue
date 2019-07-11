@@ -15,50 +15,46 @@ export default {
                     columns:[{
                         key:'key',
                     },{
-                        key:'calc',
+                        key:'val',
                     }],
                     //数据集合
                     rows:[{
                         date:'2019-07-03',
                         key:100,
-                        val:1029,
+                        val:20,
                         calc:1000
                     },{
                         date:'2019-07-04',
-                        key:200,
-                        val:3782,
-                        calc:-789
+                        key:0,
+                        val:-100,
+                        calc:789
                     },{
                         date:'2019-07-05',
-                        key:120,
-                        val:897,
-                        calc:891
+                        key:200,
+                        val:100,
+                        calc:700
                     },{
                         date:'2019-07-06',
-                        key:180,
-                        val:897,
-                        calc:891
+                        key:500,
+                        val:400,
+                        calc:0
                     }]
                 },
                 axis:{
                     X:{
-                        top:{
-                            show:false,
-
-                        },
-                        buttom:{
+                        bottom:{
                             show:true,
                             interval:{ //间隔
-                                type:'all',  // 'all'   3   'between'   'sign'  // 'auto'
+                                type:'between',  // 'all'   3   'between'   'sign'  // 'auto'
                                 sign:[]
                             },
                             formatter:(val)=>{
                                 return val
                             },
                             lineStyle:{
-                                lineWidth:3,
-                                stroke:"#ff8800",
-                                lineDash:[10,5],
+                                lineWidth:1,
+                                stroke:"#ccc",
+                                // lineDash:[10,5],
                             },
                             textStyle:{
 
@@ -95,9 +91,9 @@ export default {
                     //         lineDash:[5,5],
                     //     }
                     // },
-                    render(ctx,zrender){  //自定义渲染
-                        ctx.next()
-                    }
+                    // render(ctx,zrender){  //自定义渲染
+                    //     ctx.next()
+                    // }
                 },
                 tips:{
                     render:(ctx,zrender)=>{}

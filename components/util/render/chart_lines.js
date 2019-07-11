@@ -24,6 +24,7 @@ let chart_lines = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         }
 
         let points = calc_point(RAW_OBJ,ShowConfig,all_arr,line_arr,line_arr.length)
+        console.log(points)
 
         let render_line = new zrender.Polyline({
             shape:{
@@ -31,8 +32,9 @@ let chart_lines = (zrender,RAW_OBJ,opction,ShowConfig) =>{
                 smooth:0
             },
             style:{
-                stroke:'#ff8800',
-                lineWidth:1
+                stroke:ShowConfig.colors[r_ci],
+                lineWidth:1,
+                z:100
             }
         })
 
