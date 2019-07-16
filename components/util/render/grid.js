@@ -1,3 +1,4 @@
+import { sign_num } from '../algorithms'
 /**
  * //渲染背景网格
  * @param {*} zrender   //渲染器
@@ -5,44 +6,131 @@
  * @param {*} opction   //配置
  * @param {*} ShowConfig   //最终显示的配置
  */
-
 let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
     let bg_group = new zrender.Group(),
+        line_group = new zrender.Group(),
+        axis_group = new zrender.Group(),
         grid_config = ShowConfig.grid,
         box = ShowConfig.box,
-        next;
+        next,
+        _diff = ShowConfig._diff,
+        zero_axis = _diff.zero_axis, //0 轴
+        horizontal_num = grid_config.horizontal.num; //横线背景分段
 
     //如果不用渲染
     if(opction.grid && opction.grid.show === false){
         return bg_group;
     }
 
+    let para = (_diff.height - box.top - box.bottom) / horizontal_num,
+        top_line = parseInt(zero_axis / para), //0 轴以上线条数
+        bottom_line = parseInt((_diff.height - box.bottom - zero_axis) / para)//0 轴以下线条数
+    console.log(top_line,bottom_line)
+
     next = () =>{
-        let canvas_width = RAW_OBJ.getWidth(),
-            canvas_height = RAW_OBJ.getHeight(),
-            line;
+        let line,   //背景网格线
+            left_text, //左侧的轴文字
+            zero_line,  // 0 轴
+            zero_text,  // 0轴文字
+            Y_left_formatter = (val)=>{
+                return val
+            };
+
+            if(ShowConfig.axis.left.formatter && zrender.util.isFunction(ShowConfig.axis.left.formatter)){
+                Y_left_formatter = ShowConfig.axis.left.formatter
+            }
+
         
 
 
         //渲染横轴线 
         if(grid_config.horizontal.show === true){
-            let HOR_style = {
-                stroke: grid_config.horizontal.lineStyle.stroke,
-                lineWidth: grid_config.horizontal.lineStyle.lineWidth,
-                lineDash: grid_config.horizontal.lineStyle.lineDash,
-            }
-            for(let rxi=0; rxi<grid_config.horizontal.num; rxi++){
+            //渲染 0 轴以上的背景线 和文字
+            for(let zu = 0; zu < top_line; zu ++){
                 line = new zrender.Line({
                     shape:{
                         x1:0 + box.left,
-                        y1:(canvas_height-box.top-box.bottom) / grid_config.horizontal.num * rxi + box.top,
-                        x2:canvas_width,
-                        y2:(canvas_height-box.top-box.bottom) / grid_config.horizontal.num * rxi + box.top
+                        y1: zero_axis - para * (zu + 1),
+                        x2:_diff.width - box.right,
+                        y2:zero_axis - para * (zu + 1)
                     },
-                    style:HOR_style
+                    style:grid_config.horizontal.lineStyle
                 })
-                bg_group.add(line)
+                line_group.add(line)
+
+                //左侧的文字渲染
+                // 计算左侧的文字
+                let text = (para / zero_axis) * _diff.max * (zu + 1)
+                left_text = new zrender.Rect({
+                    shape:{
+                        x:box.left - 10,
+                        y:zero_axis - para * (zu + 1),
+                        width:0,
+                        height:0,
+                    },
+                    style: Object.assign(ShowConfig.axis.left.textStyle,{
+                        text:Y_left_formatter(sign_num(text)),
+                    })
+                })
+                line_group.add(left_text)
             }
+
+
+            //渲染 0 轴
+            zero_line = new zrender.Line({
+                shape:{
+                    x1 : box.left,
+                    y1 : zero_axis,
+                    x2 : _diff.width - box.right,
+                    y2 : zero_axis,
+                },
+                style:ShowConfig.axis.zero.lineStyle
+            })
+            zero_text = new zrender.Rect({
+                shape:{
+                    x:box.left - 10,
+                    y:zero_axis,
+                    width:0,
+                    height:0,
+                },
+                style:Object.assign(ShowConfig.axis.left.textStyle,{
+                    text:Y_left_formatter(sign_num(0)),
+                })
+            })
+            axis_group.add(zero_line)
+            axis_group.add(zero_text)
+
+
+
+            //渲染 0 轴以下的背景线
+            for(let zb = 0; zb < bottom_line; zb ++){
+                line = new zrender.Line({
+                    shape:{
+                        x1:0 + box.left,
+                        y1: zero_axis + para * (zb + 1),
+                        x2:_diff.width - box.right,
+                        y2:zero_axis + para * (zb + 1)
+                    },
+                    style:grid_config.horizontal.lineStyle
+                })
+                line_group.add(line)
+
+                //左侧的文字
+                let text = (para / zero_axis) * _diff.max * (zb + 1) * -1
+                left_text = new zrender.Rect({
+                    shape : {
+                        x:box.left - 10,
+                        y:zero_axis + para * (zb + 1),
+                        width:0,
+                        height:0,
+                    },
+                    style : Object.assign(ShowConfig.axis.left.textStyle,{
+                        text:Y_left_formatter(sign_num(text)),
+                    })
+                })
+                line_group.add(left_text)
+            } 
+
         }
         
 
@@ -61,14 +149,14 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
                 }
                 line = new zrender.Line({
                     shape:{
-                        x1:(canvas_width-box.left-box.right) / grid_config.vertical.num * vyi + box.left,
+                        x1:(_diff.width-box.left-box.right) / grid_config.vertical.num * vyi + box.left,
                         y1:box.top,
-                        x2:(canvas_width-box.left-box.right) / grid_config.vertical.num * vyi + box.left,
+                        x2:(_diff.width-box.left-box.right) / grid_config.vertical.num * vyi + box.left,
                         y2:canvas_height - box.bottom,
                     },
                     style:VER_style
                 })
-                bg_group.add(line)
+                line_group.add(line)
             }
         }
     }
@@ -88,6 +176,8 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
     }
 
     
+    bg_group.add(line_group)
+    bg_group.add(axis_group)
 
     return bg_group
 }

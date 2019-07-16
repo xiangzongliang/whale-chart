@@ -1,12 +1,54 @@
-
 var onlyId = 0x0000; //多图时唯一ID
 
 /**
- * 亿万化处理
+ * 这是一个奇怪的算法公式
+ * 大于 0 的数字输出第一位有效数字的值
+ * 例如 41 => 40  1203 => 1000  
  * @param {*} val 
  */
-let KMB = (val) => {
+let sign_num = (val) => {
+    let get_v = parseFloat(val),
+        handle = (v)=>{
+            let abs_v = Math.abs(v),    //绝对值
+                n_v = v.toString(),     //字符串
+                len = n_v.length,
+                isFloat = n_v.indexOf('.'), //是否有小数
+                fist_num = n_v.slice(0,1)
 
+            
+            if(abs_v >= 100){ // 100+
+                n_v = parseInt(abs_v).toString()
+                len = n_v.length
+                fist_num = n_v.slice(0,2)
+                return fist_num * Math.pow(10,len - 2)
+            }else if(abs_v >= 10){ // 10 ~ 99
+                n_v = parseInt(abs_v).toString()
+                len = n_v.length
+                fist_num = n_v.slice(0,1)
+                return fist_num * Math.pow(10,1)
+            }else if(abs_v >= 1){ // 1 ~ 9
+                if(isFloat >= 0){
+                    return abs_v.toFixed(2) * 1
+                }else{
+                    return abs_v
+                }
+            }else{ //0 ~ 1
+                return abs_v.toFixed(2) * 1
+            }
+        }
+
+    if(isNaN(get_v)){
+        return 0
+    }
+
+
+    if(get_v > 0){
+        return handle(get_v)
+    }else if (get_v == 0){
+        return 0
+    }else if(get_v < 0){
+        return handle(get_v) * -1
+    }
 }
 
 /**
@@ -56,10 +98,12 @@ let random = (len) => {
 
 /**
  * 通过一系列数组计算出每个点在坐标轴中的位置
- * @param {*} RAW_OBJ 
- * @param {*} ShowConfig 
- * @param {*} arr 
- * @param {*} total 
+ * 也是核心折线图和柱状图的数据分析模块
+ * @param {*} RAW_OBJ       //实例
+ * @param {*} ShowConfig    //配置
+ * @param {*} allarr        //所有值的数组
+ * @param {*} arr           //当前渲染的线的数组
+ * @param {*} total         //单一横轴渲染多少个点
  */
 let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
     let diff = maxDiff(allarr),
@@ -81,6 +125,7 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
 
         diff.height = g_height
         diff.width = g_width
+        diff.zero_axis = zero_axis
 
 
 
@@ -97,14 +142,14 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
             if(isN === true){//如果有负数
                 
                 if(arr[ai] > 0){
-                    console.log(arr[ai])
+                    // console.log(arr[ai])
                     // y = zero_axis - (arr[ai] / abs_max * (zero_axis - box.top)) + box.top //   (g_height - box.top - box.bottom) + box.top - 
                     y = zero_axis - arr[ai] / max * (zero_axis - box.top) //+ box.top //   (g_height - box.top - box.bottom) + box.top - 
                 }else if(arr[ai] == 0){
                     y = zero_axis
                 }else{
                     // y = (arr[ai] / abs_min * (g_height - box.top - box.bottom - zero_axis) * -1) + zero_axis + box.top
-                    y = (arr[ai] / abs_min * (g_height - box.top - box.bottom - zero_axis) * -1) + zero_axis
+                    y = (arr[ai] / abs_min * (g_height - box.top - box.bottom - zero_axis) * -1) + zero_axis + box.top
                 }
                 
             }else{//都为正数 0 被包含在正数中
@@ -112,12 +157,40 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
             }
             points.push([x,y])
         }
+        diff.points = points
         return points
 }
 
+
+/**
+ * 更具输入的 val 计算出 arr 中距离最近的数
+ * 主要用来处理指针的位置
+ * @param {*} val 
+ * @param {*} len 
+ * @param {*} arr 
+ */
+let adjacent = (val,part,arr)=>{
+    let rema = val % part,
+        section = parseInt(val/part)
+    if(rema >= part / 2){ //偏向下一个
+        return {
+            index : section+1,
+            position : arr[section+1]
+        }
+    }else{ //偏向上一个
+        return {
+            position : arr[section],
+            index : section
+        }
+    }
+}
+
+
+
 export {
-    KMB,
+    sign_num,
     maxDiff,
     random,
-    calc_point
+    calc_point,
+    adjacent
 }

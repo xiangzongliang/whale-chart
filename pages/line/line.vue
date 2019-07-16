@@ -9,6 +9,9 @@ export default {
     data(){
         return {
             chartOpction:{
+                box:{
+                    left:60
+                },
                 //数据集合
                 chartData:{
                     //需要展示成线的key
@@ -16,52 +19,49 @@ export default {
                         key:'key',
                     },{
                         key:'val',
+                    },{
+                        key:'calc',
                     }],
+                    //维度
+                    dimension:{
+                        bottom:{
+                            key:'date'
+                        }
+                    },
                     //数据集合
                     rows:[{
-                        date:'2019-07-03',
-                        key:100,
-                        val:20,
-                        calc:1000
+                        date:'小明',
+                        key:2,
+                        val:0.23,
+                        calc:0.21
                     },{
-                        date:'2019-07-04',
+                        date:'张三',
+                        key:0.4,
+                        val:-0.78,
+                        calc:0.9
+                    },{
+                        date:'老王',
                         key:0,
-                        val:-100,
-                        calc:789
+                        val:0.1,
+                        calc:0.4
                     },{
-                        date:'2019-07-05',
-                        key:200,
-                        val:100,
-                        calc:700
-                    },{
-                        date:'2019-07-06',
-                        key:500,
-                        val:400,
+                        date:'未知',
+                        key:0.88,
+                        val:0.34,
                         calc:0
                     }]
                 },
                 axis:{
-                    X:{
-                        bottom:{
-                            show:true,
-                            interval:{ //间隔
-                                type:'between',  // 'all'   3   'between'   'sign'  // 'auto'
-                                sign:[]
-                            },
-                            formatter:(val)=>{
-                                return val
-                            },
-                            lineStyle:{
-                                lineWidth:1,
-                                stroke:"#ccc",
-                                // lineDash:[10,5],
-                            },
-                            textStyle:{
-
-                            }
+                    bottom:{
+                        interval:{
+                            // type:'all'
                         }
                     },
-                    Y:{},
+                    left:{
+                        formatter:(val)=>{
+                            return val.toFixed(2)
+                        },
+                    },
                     render:(ctx,zrender)=>{
 
                     }
@@ -72,16 +72,16 @@ export default {
                 },
                 //背景网格
                 grid:{
-                    show:true, //是否渲染背景网格
-                    // horizontal:{ //水平背景网格线相关配置
+                    // show:true, //是否渲染背景网格
+                    horizontal:{ //水平背景网格线相关配置
                     //     show:true,  //是否显示
-                    //     num:3,      //分段数量
+                        num:10,      //分段数量
                     //     lineStyle:{
                     //         // lineWidth:3,
                     //         stroke:"#ff8800",
                     //         lineDash:[10,5],
                     //     }
-                    // },
+                    },
                     // vertical:{ //垂直背景网格线相关配置
                     //     show:true,  //是否显示
                     //     num:4,      //线条数量
@@ -108,7 +108,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .line{
-    padding: 20px;
+    // padding: 20px;
     box-sizing: border-box;
 }
 </style>

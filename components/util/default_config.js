@@ -6,6 +6,7 @@ let default_config = {
     toPX:(val)=>{
         return val
     },
+
     //初始化配置
     init:{
         renderer:'canavs',
@@ -14,58 +15,135 @@ let default_config = {
         height: 300,
         autoWidth:false, //当浏览器窗口宽度发生变化时,图表宽度自动变化 默认 false 当宽度值为auto的时候该属性生效
     },
+
     //图表盒子模型
     box:{
         top:20,
-        bottom:30,
+        bottom:25,
         left:60,
-        right:0
+        right:10
     },
+
     //颜色数组
     colors:['#EF5A3C','#029A01','#A0A0A0'],
+
     //图表数据
     chartData:{
+        //数据 array
         rows:[],
+        //维度 例如 bottom 是指 底部的 X 轴 对应的 key
+        dimension:{
+            top:{
+                key:null
+            },
+            bottom:{
+                key:null
+            },
+            left:{
+                key:null
+            },
+            right:{
+                key:null
+            }
+        },
+        //需要展示成线的key { key:'key' }
         columns:[]
     },
 
     //轴线
     axis:{
-        X:{
-            bottom:{
-                show:true,
-                interval:{ //间隔
-                    type:'between',  // 'all'   3   'between'   'sign'  // 'auto'
-                    sign:[]
-                },
-                formatter:(val)=>{
-                    return val
-                },
-                lineStyle:{
-                    lineWidth:3,
-                    stroke:"#ff8800",
-                    lineDash:[0],
-                },
-                textStyle:{
-
-                }
+        bottom:{
+            show:true,
+            interval:{ //间隔
+                type:'all',  // 'all'   3   'between'    // 'auto'
+                sign:[]
+            },
+            formatter:(val)=>{
+                return val
+            },
+            lineStyle:{
+                lineWidth:1,
+                stroke:"#ccc",
+                lineDash:[0],
+            },
+            textStyle:{
+                fontWeight:300,
+                fontSize:14,
+                textFill:"#666666",
+                textAlign: "right",
+                textVerticalAlign:"bottom"
             }
         },
-        Y:{},
+        zero:{
+            lineStyle:{
+                show:false,
+                lineWidth:1,
+                stroke:"#ccc",
+                lineDash:[3,2],
+            }
+        },
+        left:{
+            lineStyle:{
+                show:false,
+                lineWidth:1,
+                stroke:"#ccc",
+                lineDash:[0],
+            },
+            textStyle:{
+                show:true,
+                fontWeight:300,
+                fontSize:14,
+                textFill:"#666666",
+                textAlign: "right",
+                textVerticalAlign:"middle"
+            },
+            formatter:(val)=>{
+                return val
+            },
+        },
         render:(ctx,zrender)=>{
 
         }
+    },
+
+    //指针
+    pointer:{
+        //水平
+        // horizontal:{
+        //     show:false,
+        //     lineStyle:{
+        //         lineWidth:1,
+        //         stroke:"#CCA663",
+        //         lineDash:[0],
+        //     }
+        // },
+        //垂直
+        vertical:{
+            show:true,
+            lineStyle:{
+                lineWidth:1,
+                stroke:"#CCA663",
+                lineDash:[0],
+                zlevel:999,
+            }
+        }
+    },
+
+    //提示
+    tips:{
+        show:true
     },
 
     //背景网格
     grid:{
         horizontal:{
             show:true,  //是否显示
-            num:5,      //线条数量
+            num:6,      //线条数量
             lineStyle:{
                 lineWidth:1,
                 stroke:"#CCCCCC",
-                lineDash:[6,4],
+                lineDash:[3,2],
+                zlevel:10,
             }
         },
         vertical:{ //垂直背景网格线相关配置
@@ -80,7 +158,7 @@ let default_config = {
         }
     },
 
-    //该值是在绘图之后挂在在对象上的,禁止被修改
+    //该值是在绘图之后挂载在对象上的,禁止被修改
     _diff:{}
 }
 

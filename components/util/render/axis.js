@@ -6,8 +6,9 @@
  */
 let render_axis = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     let axis_group = new zrender.Group(),
-        canvas_width = RAW_OBJ.getWidth(),
-        canvas_height = RAW_OBJ.getHeight();
+        _diff = ShowConfig._diff,
+        canvas_width = _diff.width,
+        canvas_height = _diff.height;
 
     
     //渲染底部的轴和文字
@@ -36,18 +37,17 @@ let render_axis = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
     let bottom_group = new zrender.Group(),
         box = ShowConfig.box,
-        x_buttom = ShowConfig.axis.X.bottom,
-        _diff = ShowConfig._diff
+        x_buttom = ShowConfig.axis.bottom,
+        _diff = ShowConfig._diff,
+        zero_axis = _diff.zero_axis;
 
-    let zero_axis = (_diff.height - box.top - box.bottom) * (_diff.max / (_diff.abs_max + _diff.abs_min)) + box.top
-    
         //X 轴
     let btm_line = new zrender.Line({
         shape:{
             x1:box.left,
-            y1:zero_axis,// config.canvas_height - box.bottom,
-            x2:config.canvas_width,
-            y2:zero_axis,//config.canvas_height - box.bottom
+            y1:config.canvas_height - box.bottom + 1,
+            x2:config.canvas_width - box.right,
+            y2:config.canvas_height - box.bottom + 1
         },
         style:x_buttom.lineStyle
     })
@@ -56,33 +56,69 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
 
 
 
-    //渲染文字
-    for(let rbx=0; rbx<2; rbx++){
-        let textAlign = "center"
-        if(rbx == 0){
-            textAlign = "left"
-        }
-        if(rbx == 1){
-            textAlign = "right"
-        }
+    //渲染 X 轴底部的文字
+    let bottom_text_arr = [],
+        data_list = opction.chartData.rows,
+        key = ShowConfig.chartData.dimension.bottom.key,
+        type = ShowConfig.axis.bottom.interval.type,
+        render_text = (shape,style) =>{
 
-        let bottom_text = new zrender.Rect({
-            shape:{
-                x:rbx * config.canvas_width / 1,
-                y:config.canvas_height
-            },
-            style:{
-                text:'2019-07-08',
-                fontWeight:400,
-                fontSize:18,
-                textFill:"#666666",
-                textAlign: textAlign,
-                textVerticalAlign:"bottom"
-
-            }
-        })
-        bottom_group.add(bottom_text)
+            let bottom_text = new zrender.Rect({
+                shape:Object.assign({
+                    y:config.canvas_height
+                },shape),
+                style: Object.assign(ShowConfig.axis.bottom.textStyle,style)
+            })
+            bottom_group.add(bottom_text)
+        }
+    
+    if(key){
+        for(let di in data_list){
+            bottom_text_arr.push(data_list[di][key])
+        }
     }
+
+
+
+    if(type == 'all'){ //全部显示
+        let textAlign = 'center';
+        for(let rbx=0; rbx < bottom_text_arr.length; rbx++){
+            if(rbx == 0){
+                textAlign = 'left'
+            }else if(rbx == bottom_text_arr.length-1){
+                textAlign = 'right'
+            }else{
+                textAlign = 'center'
+            }
+            render_text({
+                x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
+            },{
+                text:bottom_text_arr[rbx],
+                textAlign : textAlign
+            })           
+        }
+    }else if(type == 'between'){ //只显示两端
+        for(let rbx=0; rbx < 2; rbx++){
+            if(rbx == 0){
+                render_text({
+                    x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
+                },{
+                    text:bottom_text_arr[0],
+                    textAlign : 'left'
+                })
+            }else if(rbx == 1){
+                render_text({
+                    x: config.canvas_width - box.right
+                },{
+                    text:bottom_text_arr[bottom_text_arr.length-1],
+                    textAlign : 'right'
+                })
+            }
+
+                       
+        }
+    }
+
 
     return bottom_group
 }
@@ -100,42 +136,16 @@ let render_left = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
             x2:box.left,
             y2:config.canvas_height - box.bottom
         },
-        style:{
-            stroke: "#cccccc",
-            lineWidth: 1,
-            lineDash: null
-        }
+        style : ShowConfig.axis.left.lineStyle
     })
 
 
-    //渲染左侧文字
-    let h_num = ShowConfig.grid.horizontal.num;
-    for(let hi=0; hi<h_num; hi++){
-        let left_text = new zrender.Rect({
-            shape:{
-                x:0,
-                y:(config.canvas_height-box.top-box.bottom) / h_num * hi + box.top
-            },
-            style:{
-                text:'xx%',
-                fontWeight:400,
-                fontSize:18,
-                textFill:"#666666",
-                textAlign: "left",
-                textVerticalAlign:"middle"
-
-            }
-        })
-
-        left_group.add(left_text)
-    }
+    
 
 
 
 
-
-
-    left_group.add(left_line)
+    // left_group.add(left_line)
 
     return left_group
 

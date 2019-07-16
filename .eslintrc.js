@@ -3,7 +3,7 @@ module.exports = {
     env: {
         "browser": true,
         "es6": true,
-        //"node":true
+        "node":true
     },
     extends: [
         // "eslint:recommended"
@@ -17,7 +17,7 @@ module.exports = {
         "vue"
     ],
     parserOptions: {
-        "ecmaVersion": 6,
+        "ecmaVersion": 5,
         "sourceType": "module",
         "parser": "babel-eslint",
     },
