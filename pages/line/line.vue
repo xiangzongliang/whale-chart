@@ -75,7 +75,7 @@ export default {
                     // show:true, //是否渲染背景网格
                     horizontal:{ //水平背景网格线相关配置
                     //     show:true,  //是否显示
-                        num:10,      //分段数量
+                        // num:10,      //分段数量
                     //     lineStyle:{
                     //         // lineWidth:3,
                     //         stroke:"#ff8800",

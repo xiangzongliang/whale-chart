@@ -77,7 +77,7 @@ let default_config = {
         zero:{
             lineStyle:{
                 show:false,
-                lineWidth:1,
+                lineWidth:0.5,
                 stroke:"#ccc",
                 lineDash:[3,2],
             }
@@ -121,7 +121,7 @@ let default_config = {
         vertical:{
             show:true,
             lineStyle:{
-                lineWidth:1,
+                lineWidth:0.5,
                 stroke:"#CCA663",
                 lineDash:[0],
                 zlevel:999,
@@ -138,9 +138,9 @@ let default_config = {
     grid:{
         horizontal:{
             show:true,  //是否显示
-            num:6,      //线条数量
+            num:4,      //线条数量
             lineStyle:{
-                lineWidth:1,
+                lineWidth:0.5,
                 stroke:"#CCCCCC",
                 lineDash:[3,2],
                 zlevel:10,
@@ -150,7 +150,7 @@ let default_config = {
             show:false,  //是否显示
             num:5,      //线条数量
             lineStyle:{
-                lineWidth:1,
+                lineWidth:0.5,
                 stroke:"#CCCCCC",
                 lineDash:[5,5],
                 z:0

@@ -1,5 +1,12 @@
 import { adjacent } from '../algorithms'
 
+/**
+ * 提示的文字
+ */
+let tips_text = () => {
+
+}
+
 //绘制指针
 let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     let pointer_group = new zrender.Group().dirty(),
@@ -10,6 +17,9 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         tip_box,
         before_x;
 
+
+
+        //渲染横竖线
         X_Pointer = new zrender.Line({
             shape: {
                 x1 : box.left,
@@ -21,10 +31,33 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
             zlevel:100,
         });
 
+
+        //渲染提示框
         tip_box = new zrender.Text({
             position:[_diff.width,_diff.height],
             style:{
-                fill:'#ff8800'
+                textBackgroundColor:'rgba(255,255,255,0.94)',
+                textBorderColor:'rgba(153, 153, 153, 0.25)',
+                textBorderWidth:1,
+                textBoxShadowBlur:3,
+                textBorderRadius:4,
+                textPadding:[10,10],
+                rich:{
+                    _title:{
+
+                    },
+                    _key:{
+                        fontSize:14,
+                        textFill:'#666',
+                        fontWeight:400
+                    },
+                    _val:{
+                        textPadding:[0,0,0,10],
+                        textFill:'#333',
+                        fontSize:14,
+                        fontWeight:400
+                    }
+                }
             }
         })
         pointer_group.add(X_Pointer)
@@ -32,6 +65,42 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         //默认隐藏
         X_Pointer.hide()
         tip_box.hide()
+
+
+
+        //移动的时候更新线
+        let up_line = (before_x) =>{
+            X_Pointer.animateTo({
+                shape: {
+                    x1 : before_x,
+                    x2 : before_x,
+                },
+            },300,0,'quarticOut',()=>{
+                console.log('动画结束')
+            })
+        }
+
+        //移动的时候更新提示框
+        let up_tips = (before_x,e,pp_obj) => {
+            let opt_data = opction.chartData.rows[pp_obj.index],
+                text_arr = [],
+                columns = opction.chartData.columns;
+            
+            for(let ci in columns){
+                text_arr.push(`{_key|${columns[ci].key} }{_val|${opt_data[columns[ci].key]}}`)
+            }
+            
+            
+            tip_box.attr({
+                style:{
+                    text:text_arr.join('\n'),
+                    textAlign:'left',
+                }
+            });
+            tip_box.animateTo({
+                position:[before_x + 10,e.offsetY],
+            },300,0,()=>{},true)
+        }
 
     
     RAW_OBJ.on('mousemove', (e)=>{
@@ -48,49 +117,11 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         let sub_len = (_diff.width - box.left - box.right) / (opction.chartData.rows.length - 1),
             pp_obj = adjacent(x_p_x - box.left,sub_len,_diff.points)
         
-        
+        //何时去触发重新绘制
         if(pp_obj.position && before_x != pp_obj.position[0]){
             before_x = pp_obj.position[0]
-            X_Pointer.animateTo({
-                shape: {
-                    x1 : before_x,
-                    x2 : before_x,
-                },
-            },300,0,'quarticOut',()=>{
-                console.log('动画结束')
-            })
-
-
-            // console.log(tip_box.getBoundingRect())
-            
-            tip_box.animateTo({
-                position:[before_x + 10,e.offsetY],
-                style:{
-                    text:['{name|何穗安堵死啊}','{hr|dhasuihd}'].join('\n'),
-                    textAlign:'left',
-                    textBackgroundColor:'#fff',
-                    textBoxShadowColor:'#ff8800',
-                    textBoxShadowBlur:3,
-                    textBorderRadius:4,
-                    textPadding:[10,10],
-                    rich:{
-                        name: {
-                            fontSize: 12,
-                            textFill: '#ff8800'
-                        },
-                        hr: {
-                            width: '100%',
-                            fontSize: 60,
-                            borderColor: 'rgba(255,255,255,0.2)',
-                            borderWidth: 0.5,
-                            height: 0,
-                            lineHeight: 10
-                        }
-                    }
-                }
-            },300,0,'quarticOut',()=>{
-                console.log('动画结束')
-            })
+            up_line(before_x)
+            up_tips(before_x,e,pp_obj)
         }
 
         //移动的时候显示出来
@@ -104,23 +135,12 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         X_Pointer.hide()
         tip_box.hide()
     })
+
+
+
     return pointer_group
 }
 
-/**
- * 绘制提示框
- * @param {*} opction 
- * @param {*} opction.position [x,y] //位置信息
- * @param {*} opction.index {} //Object 对象 由 chartData.rows[index] 提供的数据
- */
-let tips = (zrender,opction,RAW_OBJ)=>{
-    console.log(opction)
-    let tips_group = new zrender.Group().dirty(),
-        tip_box = 
-
-        tips_group.add(tip_box)
-        RAW_OBJ.add(tips_group)
-}
 
 
 

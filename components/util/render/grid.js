@@ -47,12 +47,17 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
         if(grid_config.horizontal.show === true){
             //渲染 0 轴以上的背景线 和文字
             for(let zu = 0; zu < top_line; zu ++){
+
+                let y_coor = zero_axis - para * (zu + 1) //计算 Y 坐标
+                if(y_coor < box.top){
+                    y_coor = box.top
+                }
                 line = new zrender.Line({
                     shape:{
                         x1:0 + box.left,
-                        y1: zero_axis - para * (zu + 1),
+                        y1: y_coor,
                         x2:_diff.width - box.right,
-                        y2:zero_axis - para * (zu + 1)
+                        y2:y_coor
                     },
                     style:grid_config.horizontal.lineStyle
                 })
@@ -64,7 +69,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
                 left_text = new zrender.Rect({
                     shape:{
                         x:box.left - 10,
-                        y:zero_axis - para * (zu + 1),
+                        y:y_coor,
                         width:0,
                         height:0,
                     },

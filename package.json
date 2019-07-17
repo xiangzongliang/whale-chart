@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "APP_ENV=dev webpack-dev-server --config core/dev.js",
         "prd": "APP_ENV=build webpack --config core/build.js",
-        "build": "APP_ENV=build webpack NODE_ENV='production' --config core/build.js",
+        "build": "APP_ENV=build NODE_ENV=production webpack --config core/build.js",
         "lint": "eslint --fix */*.vue *.js",
         "used": "APP_ENV=build webpack --display-used-exports --display-optimization-bailout --config core/build.js",
         "test:w": "jest --watchAll --coverage",
@@ -74,6 +74,8 @@
         "@babel/polyfill": "7.2.5",
         "@babel/runtime": "7.2.0",
         "axios": "^0.18.0",
+        "d3": "^5.9.7",
+        "d3-polygon": "^1.0.5",
         "vue": "^2.5.21",
         "vue-class-component": "^7.0.2",
         "vue-property-decorator": "^8.0.0",
