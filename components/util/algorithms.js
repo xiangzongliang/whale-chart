@@ -57,7 +57,7 @@ let sign_num = (val) => {
  */
 let maxDiff = (arr) => {
     let max = Math.max(...arr), //Math.abs(),
-        min = Math.min(...arr),
+        min = Math.min(...arr) > 0 ? 0 : Math.min(...arr),
         abs_max = Math.abs(max),
         abs_min = Math.abs(min),
         isNegative = false, //有负数
@@ -105,8 +105,8 @@ let random = (len) => {
  * @param {*} arr           //当前渲染的线的数组
  * @param {*} total         //单一横轴渲染多少个点
  */
-let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
-    let diff = maxDiff(allarr),
+let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
+    let diff = Object.assign(maxDiff(allarr),_diff),
         max_diff = diff.max_diff,
         max = diff.max < 0 ? 0 : diff.max,
         min = diff.min,
@@ -114,8 +114,8 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
         abs_max = diff.abs_max,
         abs_min = diff.abs_min,
 
-        g_height = RAW_OBJ.getHeight(),
-        g_width = RAW_OBJ.getWidth(),
+        g_height = diff.height,
+        g_width = diff.width,
         box = ShowConfig.box,
         points = [],
         //先要确定 0 轴
@@ -123,9 +123,9 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
         zero_axis = (g_height - box.top - box.bottom) * (max / (abs_max + abs_min)) + box.top  //确定 0 轴位置
 
 
-        diff.height = g_height
-        diff.width = g_width
+        
         diff.zero_axis = zero_axis
+        diff.all_points = all_points
 
 
 
@@ -158,6 +158,8 @@ let calc_point = (RAW_OBJ,ShowConfig,allarr,arr,total) => {
             points.push([x,y])
         }
         diff.points = points
+
+        all_points.push(points)
         return points
 }
 

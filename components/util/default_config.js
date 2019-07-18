@@ -21,11 +21,11 @@ let default_config = {
         top:20,
         bottom:25,
         left:60,
-        right:10
+        right:20
     },
 
     //颜色数组
-    colors:['#EF5A3C','#029A01','#A0A0A0'],
+    colors:['#ff8800','#33b5e5','#ff3300'],
 
     //图表数据
     chartData:{
@@ -120,11 +120,49 @@ let default_config = {
         //垂直
         vertical:{
             show:true,
-            lineStyle:{
+            style:{
                 lineWidth:0.5,
                 stroke:"#CCA663",
                 lineDash:[0],
                 zlevel:999,
+            }
+        },
+        point:{//转折点
+            show:true, //是否显示转折点 
+            item:[{
+                shape:{
+                    r:3,
+                },
+                style:{
+                    fill:'#fff',
+                }
+            }],
+
+            //选中时的样式 于 point 配置相同
+            hover:{
+                show:true, 
+                item:[{
+                    shape:{
+                        r:8,
+                    },
+                    style:{
+                        opacity:0.4
+                    }
+                },{
+                    shape:{
+                        r:5,
+                    },
+                    style:{
+                        opacity:1
+                    }
+                },{
+                    shape:{
+                        r:3,
+                    },
+                    style:{
+                        fill:'#fff'
+                    }
+                }],
             }
         }
     },

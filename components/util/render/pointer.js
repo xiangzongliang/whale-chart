@@ -1,21 +1,103 @@
 import { adjacent } from '../algorithms'
 
 /**
- * 提示的文字
+ * 绘制折线的转折点
  */
-let tips_text = () => {
+
+let render_tips_point = ({zrender,point_group,ShowConfig,index}) => {
+    let _diff = ShowConfig._diff,
+        all_points = _diff.all_points,
+        colors = ShowConfig.colors,
+        point = ShowConfig.pointer.point,
+        render_points = (points,pi) => {
+            for(let pti in points){
+                if(pti == index){ //鼠标经过的转折点
+                    if(point.hover.show === false){ 
+                        //需要吧默认的点渲染出来
+                        for(let iti in point.item){
+                            points_default_render(point.item[iti],points[pti],pi)   
+                        }
+                        continue;
+                    }
+                    let hover_item = point.hover.item || []
+                    for(let iti in hover_item){
+                        points_hover_render(hover_item[iti],points[pti],pi)
+                    }
+
+                }else{//正常的转折点
+                    if(point.show === false){
+                        continue;
+                    }
+                    for(let iti in point.item){
+                        points_default_render(point.item[iti],points[pti],pi)   
+                    }
+                }
+                
+            }
+        },
+        points_default_render = (item,position,pi) => {
+            let turning_point = new zrender.Circle({
+                shape : Object.assign({
+                    cx:position[0],
+                    cy:position[1]
+                },item.shape),
+                style : Object.assign({
+                    fill:colors[pi],
+                    stroke:colors[pi],
+                },item.style)
+            })
+            point_group.add(turning_point)
+        },
+        points_hover_render = (item,position,pi) => {
+            let turning_point = new zrender.Circle({
+                shape : {
+                    cx:position[0],
+                    cy:position[1],
+                    r:0,
+                },
+                style : Object.assign({
+                    fill:colors[pi],
+                    stroke:colors[pi],
+                    lineWidth:0
+                },item.style)
+            })
+
+            //执行一个逐渐放大的动画
+            turning_point.animate('shape', false)
+            .when(100, item.shape)
+            .start()
+            point_group.add(turning_point)
+        }
+
+    point_group.removeAll()
+    for(let pi in all_points){
+        let points = all_points[pi]
+        render_points(points,pi)    
+    }
 
 }
 
 //绘制指针
 let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
-    let pointer_group = new zrender.Group().dirty(),
+    let pointer_group = new zrender.Group().dirty(),  //指针组
+        point_group = new zrender.Group().dirty(),  //转折点组
         box = ShowConfig.box,
         _diff = ShowConfig._diff,
         X_Pointer,
         Y_Pointer,
         tip_box,
         before_x;
+
+        pointer_group.dirty() //可以更新
+
+
+        render_tips_point({
+            pointer_group,
+            ShowConfig,
+            zrender,
+            point_group,
+            index:-1 //第几列渲染成选中
+        })
 
 
 
@@ -27,7 +109,7 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
                 x2 : box.left,
                 y2 : _diff.height - box.bottom
             },
-            style: ShowConfig.pointer.vertical.lineStyle,
+            style: ShowConfig.pointer.vertical.style,
             zlevel:100,
         });
 
@@ -68,6 +150,7 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
 
 
+
         //移动的时候更新线
         let up_line = (before_x) =>{
             X_Pointer.animateTo({
@@ -75,7 +158,7 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
                     x1 : before_x,
                     x2 : before_x,
                 },
-            },300,0,'quarticOut',()=>{
+            },260,0,'quarticOut',()=>{
                 console.log('动画结束')
             })
         }
@@ -97,9 +180,29 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
                     textAlign:'left',
                 }
             });
+
+            //去计算位置
+            let tips_BD = tip_box.getBoundingRect(),
+                position_X,
+                position_Y = e.offsetY
+
+
+            //让提示框不要跑出折线范围以外
+            if(before_x > _diff.width / 2){
+                position_X = before_x - tips_BD.width - 10
+            }else{
+                position_X = before_x + 10
+            }
+            if(e.offsetY > (_diff.height - box.bottom - tips_BD.height)){
+                position_Y = _diff.height - box.bottom - tips_BD.height - 10
+            }else if(e.offsetY < box.top){
+                position_Y = box.top + 10
+            }
+
             tip_box.animateTo({
-                position:[before_x + 10,e.offsetY],
-            },300,0,()=>{},true)
+                position:[position_X,position_Y],
+            },260,0,()=>{},true)
+            
         }
 
     
@@ -115,10 +218,16 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
         // console.log(_diff)
         let sub_len = (_diff.width - box.left - box.right) / (opction.chartData.rows.length - 1),
-            pp_obj = adjacent(x_p_x - box.left,sub_len,_diff.points)
-        
+            pp_obj = adjacent(x_p_x - box.left,sub_len,_diff.all_points[0])// 当前鼠标相对画布的 X 坐标 , 横轴分段的每一段长度 , 点集合
         //何时去触发重新绘制
         if(pp_obj.position && before_x != pp_obj.position[0]){
+            render_tips_point({
+                pointer_group,
+                ShowConfig,
+                zrender,
+                point_group,
+                index:pp_obj.index //第几列渲染成选中
+            })
             before_x = pp_obj.position[0]
             up_line(before_x)
             up_tips(before_x,e,pp_obj)
@@ -137,14 +246,9 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     })
 
 
-
+    pointer_group.add(point_group) 
     return pointer_group
 }
-
-
-
-
-
 export {
     pointer
 }

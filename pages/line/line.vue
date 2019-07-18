@@ -1,6 +1,7 @@
 <template>
     <div>
         <lineChart class="line" :opction="chartOpction"/>
+        <lineChart class="line" :opction="chartOpction_two"/>
     </div>
 </template>
 <script>
@@ -32,23 +33,33 @@ export default {
                     rows:[{
                         date:'小明',
                         key:2,
-                        val:0.23,
-                        calc:0.21
+                        val:1,
+                        calc:-2
                     },{
                         date:'张三',
-                        key:0.4,
-                        val:-0.78,
-                        calc:0.9
+                        key:4,
+                        val:3,
+                        calc:-3
                     },{
                         date:'老王',
-                        key:0,
-                        val:0.1,
-                        calc:0.4
+                        key:3,
+                        val:2.5,
+                        calc:-2.2
                     },{
                         date:'未知',
-                        key:0.88,
-                        val:0.34,
+                        key:6,
+                        val:3.7,
                         calc:0
+                    },{
+                        date:'哈哈',
+                        key:8,
+                        val:5.5,
+                        calc:-3.6
+                    },{
+                        date:'呵呵',
+                        key:7,
+                        val:2.8,
+                        calc:-3
                     }]
                 },
                 axis:{
@@ -97,6 +108,40 @@ export default {
                 },
                 tips:{
                     render:(ctx,zrender)=>{}
+                },
+            },
+            chartOpction_two:{
+                chartData:{
+                    //需要展示成线的key
+                    columns:[{
+                        key:'key',
+                    }],
+                    //维度
+                    dimension:{
+                        bottom:{
+                            key:'date'
+                        }
+                    },
+                    //数据集合
+                    rows:[{
+                        date:'小明',
+                        key:2000,
+                    },{
+                        date:'张三',
+                        key:2343,
+                    },{
+                        date:'老王',
+                        key:2256,
+                    },{
+                        date:'未知',
+                        key:2839,
+                    },{
+                        date:'哈哈',
+                        key:2039,
+                    },{
+                        date:'呵呵',
+                        key:2930,
+                    }]
                 },
             }
         }
