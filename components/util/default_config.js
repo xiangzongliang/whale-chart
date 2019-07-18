@@ -25,7 +25,7 @@ let default_config = {
     },
 
     //颜色数组
-    colors:['#ff8800','#33b5e5','#ff3300'],
+    colors:['#588EEB','#CCA663','#9800FF','#DF6666','#6AA84F'],
 
     //图表数据
     chartData:{
@@ -34,7 +34,7 @@ let default_config = {
         //维度 例如 bottom 是指 底部的 X 轴 对应的 key
         dimension:{
             top:{
-                key:null
+                key:null,
             },
             bottom:{
                 key:null
@@ -46,8 +46,13 @@ let default_config = {
                 key:null
             }
         },
-        //需要展示成线的key { key:'key' }
-        columns:[]
+        /**
+         * {
+         *      key:'key'   //需要展示成线的
+         * }
+         *  */
+        columns:[],
+        smooth:0, //折线的光滑度 0-1
     },
 
     //轴线
@@ -128,7 +133,7 @@ let default_config = {
             }
         },
         point:{//转折点
-            show:true, //是否显示转折点 
+            show:false, //是否显示转折点 
             item:[{
                 shape:{
                     r:3,
@@ -153,14 +158,11 @@ let default_config = {
                         r:5,
                     },
                     style:{
-                        opacity:1
+                        fill:'#fff'
                     }
                 },{
                     shape:{
                         r:3,
-                    },
-                    style:{
-                        fill:'#fff'
                     }
                 }],
             }

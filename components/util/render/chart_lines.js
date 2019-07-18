@@ -30,7 +30,7 @@ let chart_lines = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     //开始渲染每一条线
     for(let r_ci in columns){
         let line_arr = [],
-            key = columns[r_ci].key
+            key = columns[r_ci].key;
         for(let r_li in rows){
             line_arr.push(rows[r_li][key])
         }
@@ -47,8 +47,8 @@ let chart_lines = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
         let render_line = new zrender.Polyline({
             shape:{
-                points: points,
-                smooth:0
+                points : points,
+                smooth : ShowConfig.chartData.smooth
             },
             style:{
                 stroke:ShowConfig.colors[r_ci],

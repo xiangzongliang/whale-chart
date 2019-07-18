@@ -23,6 +23,8 @@ export default {
                     },{
                         key:'calc',
                     }],
+
+                    // smooth:0.3,
                     //维度
                     dimension:{
                         bottom:{

@@ -53,11 +53,11 @@ let sign_num = (val) => {
 
 /**
  * 计算一个数组中的最大差值 切是否有负数
- * @param {*} arr 
- */
-let maxDiff = (arr) => {
+ * @param {*} arr  //数组集合
+ */ 
+let maxDiff = (arr,sub) => {
     let max = Math.max(...arr), //Math.abs(),
-        min = Math.min(...arr) > 0 ? 0 : Math.min(...arr),
+        min = Math.min(...arr),
         abs_max = Math.abs(max),
         abs_min = Math.abs(min),
         isNegative = false, //有负数
@@ -106,10 +106,10 @@ let random = (len) => {
  * @param {*} total         //单一横轴渲染多少个点
  */
 let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
-    let diff = Object.assign(maxDiff(allarr),_diff),
+    let diff = Object.assign(maxDiff(allarr,),_diff),
         max_diff = diff.max_diff,
         max = diff.max < 0 ? 0 : diff.max,
-        min = diff.min,
+        min = diff.min > 0 ? 0 : diff.min,
         isN = diff.isN,
         abs_max = diff.abs_max,
         abs_min = diff.abs_min,
@@ -121,6 +121,9 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
         //先要确定 0 轴
         // let zero_axis = (g_height - box.top - box.bottom) * (abs_max / (abs_max + abs_min)) + box.top
         zero_axis = (g_height - box.top - box.bottom) * (max / (abs_max + abs_min)) + box.top  //确定 0 轴位置
+
+
+
 
 
         
