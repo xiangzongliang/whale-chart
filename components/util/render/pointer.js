@@ -243,6 +243,14 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     RAW_OBJ.on('mouseup', (e)=>{
         X_Pointer.hide()
         tip_box.hide()
+        before_x = -1 //避免在下次滑动鼠标的时候只出现竖线,不出现选中的转折点
+        render_tips_point({
+            pointer_group,
+            ShowConfig,
+            zrender,
+            point_group,
+            index:-1 //第几列渲染成选中
+        })
     })
 
 

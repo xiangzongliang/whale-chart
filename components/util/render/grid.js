@@ -22,10 +22,9 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
         return bg_group;
     }
 
-    let para = (_diff.height - box.top - box.bottom) / horizontal_num,
-        top_line = parseInt(zero_axis / para), //0 轴以上线条数
-        bottom_line = parseInt((_diff.height - box.bottom - zero_axis) / para)//0 轴以下线条数
-    console.log(top_line,bottom_line)
+    let para = (_diff.height - box.top - box.bottom) / _diff.para,
+        top_line =  _diff.top_lins, //parseInt(zero_axis / para), //0 轴以上线条数
+        bottom_line = _diff.para - _diff.top_lins // parseInt((_diff.height - box.bottom - zero_axis) / para)//0 轴以下线条数
 
     next = () =>{
         let line,   //背景网格线
@@ -48,10 +47,11 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
             //渲染 0 轴以上的背景线 和文字
             for(let zu = 0; zu < top_line; zu ++){
 
-                let y_coor = zero_axis - para * (zu + 1) //计算 Y 坐标
+                let y_coor = zero_axis - para * (zu + 1)// + box.top //计算 Y 坐标
                 if(y_coor < box.top){
                     y_coor = box.top
                 }
+                
                 line = new zrender.Line({
                     shape:{
                         x1:0 + box.left,
@@ -65,7 +65,8 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
 
                 //左侧的文字渲染
                 // 计算左侧的文字
-                let text = (para / zero_axis) * _diff.max * (zu + 1)
+                // let text = (para / zero_axis) * _diff.max * (zu + 1)
+                let text = _diff.parag_val * (zu + 1)
                 left_text = new zrender.Rect({
                     shape:{
                         x:box.left - 10,
@@ -74,7 +75,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
                         height:0,
                     },
                     style: Object.assign(ShowConfig.axis.left.textStyle,{
-                        text:Y_left_formatter(sign_num(text)),
+                        text:Y_left_formatter(text),
                     })
                 })
                 line_group.add(left_text)

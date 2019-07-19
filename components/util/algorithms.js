@@ -5,36 +5,41 @@ var onlyId = 0x0000; //多图时唯一ID
  * 大于 0 的数字输出第一位有效数字的值
  * 例如 41 => 40  1203 => 1000  
  * @param {*} val 
+ * @param {*} noFixed 0~1 之间的值不取两位小数 
  */
-let sign_num = (val) => {
+let sign_num = (val,noFixed) => {
     let get_v = parseFloat(val),
         handle = (v)=>{
             let abs_v = Math.abs(v),    //绝对值
                 n_v = v.toString(),     //字符串
                 len = n_v.length,
                 isFloat = n_v.indexOf('.'), //是否有小数
-                fist_num = n_v.slice(0,1)
+                fist_num = n_v.slice(0,1),
+                calback_val;
 
             
             if(abs_v >= 100){ // 100+
                 n_v = parseInt(abs_v).toString()
                 len = n_v.length
                 fist_num = n_v.slice(0,2)
-                return fist_num * Math.pow(10,len - 2)
-            }else if(abs_v >= 10){ // 10 ~ 99
-                n_v = parseInt(abs_v).toString()
-                len = n_v.length
-                fist_num = n_v.slice(0,1)
-                return fist_num * Math.pow(10,1)
-            }else if(abs_v >= 1){ // 1 ~ 9
-                if(isFloat >= 0){
-                    return abs_v.toFixed(2) * 1
-                }else{
-                    return abs_v
+                calback_val = fist_num * Math.pow(10,len - 2)
+
+                if(calback_val < abs_v){
+                    calback_val = parseInt(calback_val) + Math.pow(10,len - 2)
                 }
+            }else if(abs_v >= 10){ // 10 ~ 99
+                calback_val = Math.ceil(abs_v/10)*10
+            }else if(abs_v >= 1){ // 1 ~ 9
+                calback_val = Math.ceil(abs_v)
             }else{ //0 ~ 1
-                return abs_v.toFixed(2) * 1
+                if(noFixed === true){
+                    calback_val = abs_v
+                }else{
+                    calback_val = abs_v.toFixed(2) * 1
+                }
             }
+
+            return calback_val
         }
 
     if(isNaN(get_v)){
@@ -74,7 +79,7 @@ let maxDiff = (arr,sub) => {
         return {
             max:max,    //最大值
             min:min,    //最小值
-            max_diff:callback_max,  //最大差值
+            max_diff:callback_max,  //最大差值 距离0
             isN:isNegative,     //是否有负数
             abs_max:abs_max,    //最大值的绝对值
             abs_min:abs_min     //最小值的绝对值
@@ -106,29 +111,59 @@ let random = (len) => {
  * @param {*} total         //单一横轴渲染多少个点
  */
 let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
-    let diff = Object.assign(maxDiff(allarr,),_diff),
+    let diff = Object.assign(maxDiff(allarr),_diff),
         max_diff = diff.max_diff,
         max = diff.max < 0 ? 0 : diff.max,
         min = diff.min > 0 ? 0 : diff.min,
-        isN = diff.isN,
+        isN = diff.isN, //是否有负数
         abs_max = diff.abs_max,
         abs_min = diff.abs_min,
 
         g_height = diff.height,
         g_width = diff.width,
         box = ShowConfig.box,
-        points = [],
+
+        //点坐标集合
+        points = [], 
+        zero_axis,
+        para = ShowConfig.grid.horizontal.num, //把画布的高度分为几段
+        parag_val = sign_num((max - min) / para,true)  //每一段所站数值 极值的差别的比例 在向上取近似值
+
+
+
+
+        //计算 0 轴以上有多少段
+        let top_lins = Math.ceil(max / ((max - min) / para)) // 0 以上有多少段
+
         //先要确定 0 轴
         // let zero_axis = (g_height - box.top - box.bottom) * (abs_max / (abs_max + abs_min)) + box.top
-        zero_axis = (g_height - box.top - box.bottom) * (max / (abs_max + abs_min)) + box.top  //确定 0 轴位置
+        if(min>=0){ //数组点全部在 0轴之上
+            zero_axis = g_height - box.bottom
+        }else if(max <= 0){ //数组点全部在 0轴之下
+            zero_axis = box.top
+        }else{ //数组点 分为正负值都有
+            // let _zero_axis = (g_height - box.top - box.bottom) * (max / (abs_max + abs_min)) + box.top
+
+            zero_axis = (g_height - box.top - box.bottom) / para * top_lins + box.top  //Math.ceil(max / parag_val) *  + box.top
+        }
+
+        //得到 0 轴以上多少段 ,0 轴一下多少段
 
 
+
+        // let zu = Math.ceil(max / ((max - min) / para)) // 0 以上有多少段
+
+        console.log(zero_axis,parag_val)
 
 
 
         
-        diff.zero_axis = zero_axis
-        diff.all_points = all_points
+        diff.zero_axis = zero_axis // 0 轴坐标
+        diff.all_points = all_points    //所有的点坐标集合
+        diff.para = para
+        diff.parag_val = parag_val
+        diff.top_lins = top_lins
+
 
 
 
@@ -137,6 +172,11 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
             writable: false,        //禁止被修改
         });
 
+
+
+        //========
+        max = top_lins * parag_val  //最大值发生了变化
+        max_diff = Math.abs(max) > Math.abs(min) ?  Math.abs(max) : Math.abs(min)
 
         for(let ai in arr){
             let x = (g_width - box.left - box.right) / (total-1) * (parseInt(ai)) + box.left,
@@ -161,8 +201,9 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
             points.push([x,y])
         }
         diff.points = points
-
         all_points.push(points)
+
+
         return points
 }
 
@@ -171,7 +212,7 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
  * 更具输入的 val 计算出 arr 中距离最近的数
  * 主要用来处理指针的位置
  * @param {*} val 
- * @param {*} len 
+ * @param {*} part 
  * @param {*} arr 
  */
 let adjacent = (val,part,arr)=>{

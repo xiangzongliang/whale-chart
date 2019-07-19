@@ -136,7 +136,7 @@ let default_config = {
             show:false, //是否显示转折点 
             item:[{
                 shape:{
-                    r:3,
+                    r:2,
                 },
                 style:{
                     fill:'#fff',
