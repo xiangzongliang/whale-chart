@@ -1,7 +1,7 @@
 <template>
     <div>
         <lineChart class="line" :opction="chartOpction"/>
-        <lineChart class="line" :opction="chartOpction_two"/>
+        <!-- <lineChart class="line" :opction="chartOpction_two"/> -->
     </div>
 </template>
 <script>
@@ -11,13 +11,21 @@ export default {
         return {
             chartOpction:{
                 box:{
-                    left:60
+                    left:50,
+                    bottom:40
+                },
+                //维度
+                dimension:{
+                    bottom:{
+                        key:'name',
+                    }
                 },
                 //数据集合
                 chartData:{
                     //需要展示成线的key
                     columns:[{
                         key:'key',
+                        type:'bar',
                     },{
                         key:'val',
                     },{
@@ -25,40 +33,35 @@ export default {
                     }],
 
                     // smooth:0.3,
-                    //维度
-                    dimension:{
-                        bottom:{
-                            key:'date'
-                        }
-                    },
+                    
                     //数据集合
                     rows:[{
-                        date:'小明',
-                        key:2,
+                        name:'小明',
+                        key:3,
                         val:1,
+                        calc:-1
+                    },{
+                        name:'张三',
+                        key:4,
+                        val:0,
                         calc:-2
                     },{
-                        date:'张三',
-                        key:4,
-                        val:3,
-                        calc:-3
-                    },{
-                        date:'老王',
+                        name:'老王',
                         key:3,
-                        val:2.5,
+                        val:1,
                         calc:-2.2
                     },{
-                        date:'未知',
+                        name:'未知',
                         key:6,
-                        val:3.7,
-                        calc:0
+                        val:2,
+                        calc:-1.33333
                     },{
-                        date:'哈哈',
+                        name:'哈哈',
                         key:8,
                         val:5.5,
-                        calc:-3.6
+                        calc:-2.222
                     },{
-                        date:'呵呵',
+                        name:'呵呵',
                         key:7,
                         val:2.8,
                         calc:-3
@@ -67,21 +70,31 @@ export default {
                 axis:{
                     bottom:{
                         interval:{
-                            // type:'all'
+                            type:'all' //between
+                        },
+                        formatter:(val,data)=>{
+                            return [val,'{time|2019}'].join('\n')
+                        },
+                        textStyle:{
+                            textOffset:[0,0],
+                            textFill:'#ff8800',
+                            textVerticalAlign:'bottom',
+                            rich:{
+                                time:{
+                                    textFill:"#666666",
+                                }
+                            }
                         }
                     },
                     left:{
                         formatter:(val)=>{
-                            return val.toFixed(2)
+                            return [val.toFixed(2),'2019'].join('\n')
                         },
+                        // formatter:123
                     },
                     render:(ctx,zrender)=>{
 
                     }
-                },
-                color:[],
-                title:{
-                    render:(ctx,zrender)=>{}
                 },
                 //背景网格
                 grid:{
@@ -114,35 +127,37 @@ export default {
             },
             chartOpction_two:{
                 chartData:{
+                    dimension:{
+                        bottom:{
+                            key:'date',
+                            formatter:(val)=>{
+                                return [val,'1'].join('\n')
+                            }
+                        }
+                    },
                     //需要展示成线的key
                     columns:[{
                         key:'key',
                     }],
-                    //维度
-                    dimension:{
-                        bottom:{
-                            key:'date'
-                        }
-                    },
                     //数据集合
                     rows:[{
                         date:'小明',
-                        key:2000,
+                        key:-2000,
                     },{
                         date:'张三',
-                        key:2343,
+                        key:-2343,
                     },{
                         date:'老王',
-                        key:2256,
+                        key:-2960,
                     },{
                         date:'未知',
-                        key:0,
+                        key:300,
                     },{
                         date:'哈哈',
-                        key:2039,
+                        key:-2039,
                     },{
                         date:'呵呵',
-                        key:2930,
+                        key:-2900,
                     }]
                 },
             }

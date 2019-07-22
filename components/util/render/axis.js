@@ -39,7 +39,8 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
         box = ShowConfig.box,
         x_buttom = ShowConfig.axis.bottom,
         _diff = ShowConfig._diff,
-        zero_axis = _diff.zero_axis;
+        zero_axis = _diff.zero_axis,
+        formatter_bottom = ShowConfig.axis.bottom.formatter
 
         //X 轴
     let btm_line = new zrender.Line({
@@ -59,7 +60,7 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
     //渲染 X 轴底部的文字
     let bottom_text_arr = [],
         data_list = opction.chartData.rows,
-        key = ShowConfig.chartData.dimension.bottom.key,
+        key = ShowConfig.dimension.bottom.key,
         type = ShowConfig.axis.bottom.interval.type,
         render_text = (shape,style) =>{
 
@@ -79,10 +80,10 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
     }
 
 
-
     if(type == 'all'){ //全部显示
         let textAlign = 'center';
         for(let rbx=0; rbx < bottom_text_arr.length; rbx++){
+            
             if(rbx == 0){
                 textAlign = 'left'
             }else if(rbx == bottom_text_arr.length-1){
@@ -93,7 +94,7 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
             render_text({
                 x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
             },{
-                text:bottom_text_arr[rbx],
+                text: formatter_bottom(bottom_text_arr[rbx],data_list[rbx]),
                 textAlign : textAlign
             })           
         }
@@ -103,14 +104,14 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
                 render_text({
                     x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
                 },{
-                    text:bottom_text_arr[0],
+                    text:formatter_bottom(bottom_text_arr[0],data_list[rbx]),
                     textAlign : 'left'
                 })
             }else if(rbx == 1){
                 render_text({
                     x: config.canvas_width - box.right
                 },{
-                    text:bottom_text_arr[bottom_text_arr.length-1],
+                    text: formatter_bottom(bottom_text_arr[bottom_text_arr.length-1],data_list[rbx]),
                     textAlign : 'right'
                 })
             }

@@ -27,25 +27,43 @@ let default_config = {
     //颜色数组
     colors:['#588EEB','#CCA663','#9800FF','#DF6666','#6AA84F'],
 
+    //维度 例如 bottom 是指 底部的 X 轴 对应的 key
+    dimension:{
+        top:{
+            key:null,
+            formatter:(val,data)=>{
+                return val
+            },
+        },
+        bottom:{
+            key:null,
+            formatter:(val,data)=>{
+                /**
+                 * @val 当前列的值
+                 * @data 当前列的所有值
+                 */
+                return val
+            }
+        },
+        left:{
+            key:null,
+            formatter:(val,data)=>{
+                return val
+            }
+        },
+        right:{
+            key:null,
+            formatter:(val,data)=>{
+                return val
+            }
+        }
+    },
+
     //图表数据
     chartData:{
         //数据 array
         rows:[],
-        //维度 例如 bottom 是指 底部的 X 轴 对应的 key
-        dimension:{
-            top:{
-                key:null,
-            },
-            bottom:{
-                key:null
-            },
-            left:{
-                key:null
-            },
-            right:{
-                key:null
-            }
-        },
+        
         /**
          * {
          *      key:'key'   //需要展示成线的
@@ -60,11 +78,8 @@ let default_config = {
         bottom:{
             show:true,
             interval:{ //间隔
-                type:'all',  // 'all'   3   'between'    // 'auto'
+                type:'all',  // 'all'    'between'    'sign' 
                 sign:[]
-            },
-            formatter:(val)=>{
-                return val
             },
             lineStyle:{
                 lineWidth:1,
@@ -76,7 +91,7 @@ let default_config = {
                 fontSize:14,
                 textFill:"#666666",
                 textAlign: "right",
-                textVerticalAlign:"bottom"
+                textVerticalAlign:"bottom",
             }
         },
         zero:{
@@ -133,7 +148,7 @@ let default_config = {
             }
         },
         point:{//转折点
-            show:false, //是否显示转折点 
+            show:true, //是否显示转折点 
             item:[{
                 shape:{
                     r:2,
@@ -196,6 +211,11 @@ let default_config = {
                 z:0
             }
         }
+    },
+
+    //扩展功能
+    extend:(ctx,zrender)=>{
+
     },
 
     //该值是在绘图之后挂载在对象上的,禁止被修改

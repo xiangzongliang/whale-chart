@@ -35,6 +35,7 @@ export default {
 
         zrender.util.merge(this.ShowConfig,default_config,true)
         zrender.util.merge(this.ShowConfig,this.opction,true)
+
         // // //开始渲染全部
         this.renderAll()
     },
