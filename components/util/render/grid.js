@@ -67,7 +67,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
                 let text = _diff.cut * (zu + 1)
                 left_text = new zrender.Rect({
                     shape:{
-                        x:box.left - 10,
+                        x:ShowConfig.axis.left.paddingLeft,
                         y:y_coor,
                         width:0,
                         height:0,
@@ -92,7 +92,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
             })
             zero_text = new zrender.Rect({
                 shape:{
-                    x:box.left - 10,
+                    x:ShowConfig.axis.left.paddingLeft,
                     y:zero_axis,
                     width:0,
                     height:0,
@@ -130,7 +130,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
                 let text = _diff.cut * (zb + 1) * -1
                 left_text = new zrender.Rect({
                     shape : {
-                        x:box.left - 10,
+                        x:ShowConfig.axis.left.paddingLeft,
                         y:zero_axis + para * (zb + 1),
                         width:0,
                         height:0,

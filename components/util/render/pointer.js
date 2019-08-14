@@ -165,9 +165,9 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
         //移动的时候更新提示框
         let up_tips = (before_x,e,pp_obj) => {
-            let opt_data = opction.chartData.rows[pp_obj.index],
+            let opt_data = opction.chartData[pp_obj.index],
                 text_arr = [],
-                columns = opction.chartData.columns;
+                columns = opction.columns;
             
             for(let ci in columns){
                 text_arr.push(`{_key|${columns[ci].key} }{_val|${opt_data[columns[ci].key]}}`)
@@ -217,7 +217,7 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
 
         // console.log(_diff)
-        let sub_len = (_diff.width - box.left - box.right) / (opction.chartData.rows.length - 1),
+        let sub_len = (_diff.width - box.left - box.right) / (opction.chartData.length - 1),
             pp_obj = adjacent(x_p_x - box.left,sub_len,_diff.all_points[0])// 当前鼠标相对画布的 X 坐标 , 横轴分段的每一段长度 , 点集合
         //何时去触发重新绘制
         if(pp_obj.position && before_x != pp_obj.position[0]){

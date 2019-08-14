@@ -4,7 +4,8 @@
 <script>
 import zrender from 'zrender'
 import { random } from './util/algorithms'
-import { default_config } from './util/default_config'
+import { default_config } from './util/config/default.config'
+import { line_config } from './util/config/line.config'
 import { render_grid,render_axis,chart_lines,pointer } from './util/render'
 export default {
     data(){
@@ -27,13 +28,15 @@ export default {
     },
     mounted(){
         //初始化
-        let opt = Object.assign({},default_config.init); //生成一个新对象 ,避免多图重复 永远不要试图修改 默认配置
+        let merge_config = Object.assign(default_config,line_config),
+            opt = Object.assign({},merge_config.init); //生成一个新对象 ,避免多图重复 永远不要试图修改 默认配置
+            
         zrender.util.merge(opt,this.opction.init,true)
         //最终实例
         let w_line = zrender.init(this.$refs[this.lineRef],opt)
         this.RAW_OBJ = w_line
 
-        zrender.util.merge(this.ShowConfig,default_config,true)
+        zrender.util.merge(this.ShowConfig,merge_config,true)
         zrender.util.merge(this.ShowConfig,this.opction,true)
 
         // // //开始渲染全部

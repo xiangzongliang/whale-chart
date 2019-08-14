@@ -59,7 +59,7 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
 
     //渲染 X 轴底部的文字
     let bottom_text_arr = [],
-        data_list = opction.chartData.rows,
+        data_list = opction.chartData,
         key = ShowConfig.dimension.bottom.key,
         type = ShowConfig.axis.bottom.interval.type,
         render_text = (shape,style) =>{

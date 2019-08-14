@@ -1,17 +1,25 @@
 <template>
     <div>
         <lineChart class="line" :opction="chartOpction"/>
+        <bar-chart :opction="chartOpction"/>
+        <cakeChart class="cake" :opction="cakeOpction"/>
+        
         <!-- <lineChart class="line" :opction="chartOpction_two"/> -->
     </div>
 </template>
 <script>
 import lineChart from '@/components/line.vue'
+import barChart from '@/components/bar.vue'
+import cakeChart from '@/components/cake.vue'
 export default {
     data(){
         return {
+            barOpction:{
+
+            },
             chartOpction:{
                 box:{
-                    left:50,
+                    left:60,
                     bottom:40
                 },
                 //维度
@@ -20,53 +28,44 @@ export default {
                         key:'name',
                     }
                 },
-                //数据集合
-                chartData:{
-                    //需要展示成线的key
-                    columns:[{
-                        key:'key',
-                        type:'bar',
-                    },{
-                        key:'val',
-                    },{
-                        key:'calc',
-                    }],
+                columns:[{
+                    key:'key',//需要展示成线的key
+                    type:'bar',
+                    line:{
+                        smooth:0.3
+                    },
+                    bar:{
 
-                    // smooth:0.3,
-                    
-                    //数据集合
-                    rows:[{
-                        name:'小明',
-                        key:3,
-                        val:1,
-                        calc:-1
-                    },{
-                        name:'张三',
-                        key:4,
-                        val:0,
-                        calc:-2
-                    },{
-                        name:'老王',
-                        key:3,
-                        val:1,
-                        calc:-2.2
-                    },{
-                        name:'未知',
-                        key:6,
-                        val:2,
-                        calc:-1.33333
-                    },{
-                        name:'哈哈',
-                        key:8,
-                        val:5.5,
-                        calc:-2.222
-                    },{
-                        name:'呵呵',
-                        key:7,
-                        val:2.8,
-                        calc:-3
-                    }]
-                },
+                    }
+
+                },{
+                    key:'calc',
+                    line:{
+                        smooth:'0'
+                    }
+                }],
+                //数据集合
+                chartData:[{
+                    name:'小明',
+                    key:3,
+                    val:1,
+                    calc:-1
+                },{
+                    name:'张三',
+                    key:4,
+                    val:0,
+                    calc:-2
+                },{
+                    name:'老王',
+                    key:-2.5,
+                    val:1,
+                    calc:-2.2
+                },{
+                    name:'未知',
+                    key:6,
+                    val:2,
+                    calc:-1.33333
+                }],
                 axis:{
                     bottom:{
                         interval:{
@@ -87,10 +86,11 @@ export default {
                         }
                     },
                     left:{
+                        paddingLeft:35,
                         formatter:(val)=>{
+                            // return val
                             return [val.toFixed(2),'2019'].join('\n')
                         },
-                        // formatter:123
                     },
                     render:(ctx,zrender)=>{
 
@@ -125,46 +125,26 @@ export default {
                     render:(ctx,zrender)=>{}
                 },
             },
-            chartOpction_two:{
+            cakeOpction:{
                 chartData:{
-                    dimension:{
-                        bottom:{
-                            key:'date',
-                            formatter:(val)=>{
-                                return [val,'1'].join('\n')
-                            }
-                        }
-                    },
                     //需要展示成线的key
                     columns:[{
-                        key:'key',
+                        key:'val',
                     }],
                     //数据集合
                     rows:[{
-                        date:'小明',
-                        key:-2000,
+                        key:50
                     },{
-                        date:'张三',
-                        key:-2343,
-                    },{
-                        date:'老王',
-                        key:-2960,
-                    },{
-                        date:'未知',
-                        key:300,
-                    },{
-                        date:'哈哈',
-                        key:-2039,
-                    },{
-                        date:'呵呵',
-                        key:-2900,
+                        key:50
                     }]
                 },
             }
         }
     },
     components:{
-        lineChart
+        lineChart,
+        cakeChart,
+        barChart
     }
 }
 </script>

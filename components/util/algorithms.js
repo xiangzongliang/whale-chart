@@ -1,7 +1,7 @@
 var onlyId = 0x0000; //多图时唯一ID
 
 /**
- * 这是一个奇怪的算法公式
+ * 这是一个奇怪的计算公式
  * 大于 0 的数字输出第一位有效数字的值
  * 例如 41 => 40  1203 => 1000  
  * @param {*} val 
@@ -56,6 +56,7 @@ let sign_num = (val,noFixed) => {
     }
 }
 
+
 /**
  * 计算一个数组中的最大差值 切是否有负数
  * @param {*} arr  //数组集合
@@ -85,6 +86,8 @@ let maxDiff = (arr,sub) => {
             abs_min:abs_min     //最小值的绝对值
         }
 }
+
+
 /**
  * 生成随机字符 用来处理唯一 ID
  * @param {*} len 
@@ -100,6 +103,7 @@ let random = (len) => {
     }
 　　return `${callback}${onlyId}`;
 }
+
 
 /**
  * 通过一系列数组计算出每个点在坐标轴中的位置
@@ -211,7 +215,7 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
 
 /**
  * 更具输入的 val 计算出 arr 中距离最近的数
- * 主要用来处理指针的位置
+ * 主要用来处理折线和柱状图指针的位置
  * @param {*} val 
  * @param {*} part 
  * @param {*} arr 
@@ -238,7 +242,6 @@ let adjacent = (val,part,arr)=>{
  * 在这里是在用数组坐标去匹配绘图区域的坐标
  * 用于计算折线或柱状图的绘制区域最大值和最小值
  * 通过分段 的数量来重新计算绘制的值
- * @param {*} param0 
  */
 let cutter = ({max,min,len,height})=>{
     if(min>0){
@@ -269,6 +272,42 @@ let cutter = ({max,min,len,height})=>{
 }
 
 
+/**
+ * @简单统计
+ * 
+ * 已知:
+ *          数组 arr 集合
+ *          数字 num
+ * 条件:    
+ *          排出所有负数
+ * 求:      
+ *          num 占数组集合总和的百分比
+ */
+let percentage = ({arr=[],num=0})=>{
+    console.log(arr)
+}
+
+
+/**
+ * @三角函数
+ * 
+ * 已知:
+ *      圆心坐标 x1,y1
+ *      半径    R
+ *      夹角    horn
+ * 条件:
+ *      以Y轴正半轴开始绘制的圆形,且夹角为 horn 
+ *      巨型的左上角的点为[0,0]点,是一个反向的平面直角坐标系
+ * 求:  
+ *      过圆上点的坐标[x,y]
+ */
+let round_edge = ({x1,y1,R}) => {
+
+}
+
+
+
+
 
 export {
     sign_num,
@@ -276,5 +315,7 @@ export {
     random,
     calc_point,
     adjacent,
-    cutter
+    cutter,
+    percentage,
+    round_edge
 }
