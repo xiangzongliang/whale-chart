@@ -1,7 +1,7 @@
 <template>
     <div>
         <lineChart class="line" :opction="chartOpction"/>
-        <bar-chart :opction="chartOpction"/>
+        <bar-chart :opction="barOpction"/>
         <cakeChart class="cake" :opction="cakeOpction"/>
         
         <!-- <lineChart class="line" :opction="chartOpction_two"/> -->
@@ -15,7 +15,50 @@ export default {
     data(){
         return {
             barOpction:{
-
+                //维度
+                dimension:{
+                    bottom:{
+                        key:'name',
+                    }
+                },
+                columns:[{
+                    key:'key',//需要展示成线的key
+                    type:'bar',
+                    bar:{
+                        width:20
+                    }
+                },{
+                    key:'val',//需要展示成线的key
+                    type:'bar',
+                    bar:{
+                        width:20,
+                        style:{
+                            fill:'#33b5e5'
+                        }
+                    }
+                }],
+                //数据集合
+                chartData:[{
+                    name:'小明',
+                    key:3,
+                    val:1,
+                    calc:-1
+                },{
+                    name:'张三',
+                    key:4,
+                    val:0,
+                    calc:-2
+                },{
+                    name:'老王',
+                    key:-2.5,
+                    val:1,
+                    calc:-2.2
+                },{
+                    name:'未知',
+                    key:6,
+                    val:2,
+                    calc:-1.33333
+                }],
             },
             chartOpction:{
                 box:{

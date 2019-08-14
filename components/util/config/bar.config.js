@@ -39,17 +39,6 @@ let bar_config = {
         //     }
         // }
     },
-
-    columns:[{
-        key:'key',//需要展示成线的key
-        type:'bar',
-        bar:{
-            width:10,
-            style:{
-                
-            }
-        }
-    }],
     //轴线
     axis:{
         bottom:{
@@ -69,6 +58,9 @@ let bar_config = {
                 textFill:"#666666",
                 textAlign: "right",
                 textVerticalAlign:"bottom",
+            },
+            formatter(text,data){
+                return text
             }
         },
         zero:{

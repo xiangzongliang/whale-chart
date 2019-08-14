@@ -7,9 +7,17 @@ let chart_bar = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         columns = opction.columns,
         all_arr = [], //所有的数据形成一个数组 求最大最小值
         all_points = [],
+        colors = ShowConfig.colors,
         _diff = {
             height : RAW_OBJ.getHeight(),
             width : RAW_OBJ.getWidth()
+        },
+        bar_default_style = {
+            width:20, //默认宽度
+            interval:10, //默认间隔
+            style:{
+
+            }
         }
     
     //得到所有数据要显示的集合
@@ -25,14 +33,14 @@ let chart_bar = (zrender,RAW_OBJ,opction,ShowConfig) =>{
     for(let r_ci in columns){
         let bar_arr = [],
             key = columns[r_ci].key,
-            line = columns[r_ci].line,
-            smooth = (line && line.smooth) ? line.smooth : 0.3
+            bar = columns[r_ci].bar || {}
+
+        Object.assign(bar_default_style,bar)
 
 
         for(let r_li in rows){
             bar_arr.push(rows[r_li][key])
         }
-
         let points = calc_point({
             RAW_OBJ,
             ShowConfig,
@@ -43,26 +51,25 @@ let chart_bar = (zrender,RAW_OBJ,opction,ShowConfig) =>{
             _diff
         })
 
+        console.log(points)
+
+        for(let r_bi in points){
+            let render_bar = new zrender.Rect({
+                shape:{
+                    r:0,
+                    x:points[r_bi][0] - bar_default_style.width / 2,
+                    y:points[r_bi][1],
+                    width:bar_default_style.width,
+                    height: ShowConfig._diff.zero_axis - points[r_bi][1]// + 
+                },
+                style:bar_default_style.style
+            })
+
+            bar_group.add(render_bar)
+        }
 
         
-        let render_bar = new zrender.Polyline({
-            shape:{
-                points : points,
-                smooth : smooth
-            },
-            style:{
-                stroke:ShowConfig.colors[r_ci],
-                lineWidth:1,
-                z:100
-            },
-            smoothConstraint:[
-                [box.left,box.top],
-                [_diff.width - box.right,box.top],
-                [_diff.height - box.bottom,box.left],
-                [_diff.width - box.right, _diff.height - box.bottom]
-            ]//将计算出来的控制点约束在一个包围盒内
-        })
-        bar_group.add(render_bar)
+        
     }
 
 
@@ -71,3 +78,4 @@ let chart_bar = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 export {
     chart_bar
 }
+    

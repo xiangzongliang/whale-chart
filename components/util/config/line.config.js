@@ -58,6 +58,9 @@ let line_config = {
                 textFill:"#666666",
                 textAlign: "right",
                 textVerticalAlign:"bottom",
+            },
+            formatter(text,data){
+                return text
             }
         },
         zero:{
