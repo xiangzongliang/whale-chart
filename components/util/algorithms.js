@@ -113,8 +113,11 @@ let random = (len) => {
  * @param {*} allarr        //所有值的数组
  * @param {*} arr           //当前渲染的线的数组
  * @param {*} total         //单一横轴渲染多少个点
+ * @param {*} all_points    //当前图表的所有计算的点集合
+ * @param {*} _diff         //差值  用于存储核心计算需要的值,在其他地方只可读取不可赋值
+ * @param {*} deviation     //偏移 主要用于柱状图的绘制偏移
  */
-let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
+let calc_point = ({RAW_OBJ ,ShowConfig={} ,allarr=[] ,arr=[] ,total=0 ,all_points=[] ,_diff={} ,deviation=0}) => {
     let diff = Object.assign(maxDiff(allarr),_diff),
         max_diff = diff.max_diff,
         max = diff.max,
@@ -177,7 +180,8 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
             cut,    //数值被拆分成多少段之后的向上近似值
             all_line,   //一共有多少横线
             zero_top,   //0 轴以上多少背景横线
-            zero_bottom //0 轴以下多少背景横线
+            zero_bottom, //0 轴以下多少背景横线
+            deviation:deviation //是否存在绘制偏移
         })
 
         Object.defineProperty(ShowConfig, '_diff', {
@@ -189,6 +193,12 @@ let calc_point = ({RAW_OBJ,ShowConfig,allarr,arr,total,all_points,_diff}) => {
         for(let ai in arr){
             let x = (g_width - box.left - box.right) / (total-1) * (parseInt(ai)) + box.left,
                 y = 0;
+
+            //柱状图或者混合图需要的偏移   
+            if(deviation){
+                x = (g_width - box.left - box.right - deviation) / (total-1) * (parseInt(ai)) + box.left + deviation/2
+            }
+            
 
             if(isN === true){//如果有负数
                 if(arr[ai] > 0){

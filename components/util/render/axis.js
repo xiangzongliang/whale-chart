@@ -40,7 +40,9 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
         x_buttom = ShowConfig.axis.bottom,
         _diff = ShowConfig._diff,
         zero_axis = _diff.zero_axis,
+        points = ShowConfig._diff.points,
         formatter_bottom = ShowConfig.axis.bottom.formatter
+
 
         //X 轴
     let btm_line = new zrender.Line({
@@ -82,22 +84,40 @@ let render_bottom = (zrender,RAW_OBJ,opction,config,ShowConfig) =>{
 
     if(type == 'all'){ //全部显示
         let textAlign = 'center';
-        for(let rbx=0; rbx < bottom_text_arr.length; rbx++){
-            
-            if(rbx == 0){
-                textAlign = 'left'
-            }else if(rbx == bottom_text_arr.length-1){
-                textAlign = 'right'
-            }else{
-                textAlign = 'center'
+        for(let rbx in points){
+            if(!ShowConfig._diff.deviation){
+                if(rbx == 0){
+                    textAlign = 'left'
+                }else if(rbx == bottom_text_arr.length-1){
+                    textAlign = 'right'
+                }else{
+                    textAlign = 'center'
+                }
             }
+            
             render_text({
-                x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
+                x: points[rbx][0]
             },{
                 text: formatter_bottom(bottom_text_arr[rbx],data_list[rbx]),
                 textAlign : textAlign
-            })           
+            }) 
         }
+        // for(let rbx=0; rbx < bottom_text_arr.length; rbx++){
+            
+        //     if(rbx == 0){
+        //         textAlign = 'left'
+        //     }else if(rbx == bottom_text_arr.length-1){
+        //         textAlign = 'right'
+        //     }else{
+        //         textAlign = 'center'
+        //     }
+        //     render_text({
+        //         x: rbx * (config.canvas_width - box.left - box.right) / (bottom_text_arr.length - 1) + box.left
+        //     },{
+        //         text: formatter_bottom(bottom_text_arr[rbx],data_list[rbx]),
+        //         textAlign : textAlign
+        //     })           
+        // }
     }else if(type == 'between'){ //只显示两端
         for(let rbx=0; rbx < 2; rbx++){
             if(rbx == 0){

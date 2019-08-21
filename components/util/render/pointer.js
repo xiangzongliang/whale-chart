@@ -9,8 +9,17 @@ let render_tips_point = ({zrender,point_group,ShowConfig,index}) => {
         all_points = _diff.all_points,
         colors = ShowConfig.colors,
         point = ShowConfig.pointer.point,
+        columns = ShowConfig.columns,
         render_points = (points,pi) => {
             for(let pti in points){
+                let type = (columns[pi] && columns[pi].type) ? columns[pi].type : 'line'
+
+
+                //如果是柱形图则不绘制转折点
+                if(type == 'bar'){
+                    continue
+                }
+
                 if(pti == index){ //鼠标经过的转折点
                     if(point.hover.show === false){ 
                         //需要吧默认的点渲染出来
@@ -42,8 +51,8 @@ let render_tips_point = ({zrender,point_group,ShowConfig,index}) => {
                     cy:position[1]
                 },item.shape),
                 style : Object.assign({
-                    fill:colors[pi],
-                    stroke:colors[pi],
+                    fill    : colors[pi] || '#000',
+                    stroke  : colors[pi] || '#000',
                 },item.style)
             })
             point_group.add(turning_point)
@@ -56,8 +65,8 @@ let render_tips_point = ({zrender,point_group,ShowConfig,index}) => {
                     r:0,
                 },
                 style : Object.assign({
-                    fill:colors[pi],
-                    stroke:colors[pi],
+                    fill    : colors[pi] || '#000',
+                    stroke  : colors[pi] || '#000',
                     lineWidth:0
                 },item.style)
             })
@@ -86,7 +95,9 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         X_Pointer,
         Y_Pointer,
         tip_box,
-        before_x;
+        before_x,
+        vertical = ShowConfig.pointer.vertical,
+        tip = ShowConfig.pointer.tip;
 
         pointer_group.dirty() //可以更新
 
@@ -100,7 +111,6 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         })
 
 
-
         //渲染横竖线
         X_Pointer = new zrender.Line({
             shape: {
@@ -112,36 +122,17 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
             style: ShowConfig.pointer.vertical.style,
             zlevel:100,
         });
+        
 
 
         //渲染提示框
         tip_box = new zrender.Text({
             position:[_diff.width,_diff.height],
-            style:{
-                textBackgroundColor:'rgba(255,255,255,0.94)',
-                textBorderColor:'rgba(153, 153, 153, 0.25)',
-                textBorderWidth:1,
-                textBoxShadowBlur:3,
-                textBorderRadius:4,
-                textPadding:[10,10],
-                rich:{
-                    _title:{
-
-                    },
-                    _key:{
-                        fontSize:14,
-                        textFill:'#666',
-                        fontWeight:400
-                    },
-                    _val:{
-                        textPadding:[0,0,0,10],
-                        textFill:'#333',
-                        fontSize:14,
-                        fontWeight:400
-                    }
-                }
-            }
+            style:tip.style
         })
+        
+
+
         pointer_group.add(X_Pointer)
         pointer_group.add(tip_box)
         //默认隐藏
@@ -153,6 +144,9 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
 
         //移动的时候更新线
         let up_line = (before_x) =>{
+            if(vertical.show !== true){
+                return
+            }
             X_Pointer.animateTo({
                 shape: {
                     x1 : before_x,
@@ -167,16 +161,26 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         let up_tips = (before_x,e,pp_obj) => {
             let opt_data = opction.chartData[pp_obj.index],
                 text_arr = [],
+                fmt_arr = [],
                 columns = opction.columns;
             
             for(let ci in columns){
                 text_arr.push(`{_key|${columns[ci].key} }{_val|${opt_data[columns[ci].key]}}`)
+                fmt_arr.push([`${columns[ci].key}`,`${opt_data[columns[ci].key]}`])
             }
+
+
+            let GET_text_arr = tip.formatter(fmt_arr)
+
+            if(!GET_text_arr){
+                GET_text_arr = text_arr
+            }
+
             
             
             tip_box.attr({
                 style:{
-                    text:text_arr.join('\n'),
+                    text:GET_text_arr.join('\n'),
                     textAlign:'left',
                 }
             });
@@ -234,8 +238,12 @@ let pointer = (zrender,RAW_OBJ,opction,ShowConfig) =>{
         }
 
         //移动的时候显示出来
-        X_Pointer.show()
-        tip_box.show()
+        if(vertical.show === true){
+            X_Pointer.show()
+        }
+        if(tip.show === true){
+            tip_box.show()
+        }
     })
 
 

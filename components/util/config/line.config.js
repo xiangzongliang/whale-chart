@@ -151,6 +151,13 @@ let line_config = {
                     }
                 }],
             }
+        },
+        tip:{
+            show:true,
+            formatter(text,data){
+                return text
+            },
+            style:{}
         }
     },
 

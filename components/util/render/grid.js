@@ -11,6 +11,7 @@ let render_grid = (zrender,RAW_OBJ,opction,ShowConfig) => {
         line_group = new zrender.Group(),
         axis_group = new zrender.Group(),
         grid_config = ShowConfig.grid,
+        dpr = ShowConfig.dpr,
         box = ShowConfig.box,
         next,
         _diff = ShowConfig._diff,

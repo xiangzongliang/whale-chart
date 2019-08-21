@@ -4,12 +4,21 @@
 let default_config = {
     //这是一个计算公式 将所有配置的值经过计算 得出 px 的单位 
     dpr:(val)=>{
-        return val
+        if(typeof val === 'number'){
+            return val*dpr
+        }else{
+            let n_val = val * 1
+            if(isNaN(n_val)){
+                return val
+            }else{
+                return n_val*dpr
+            }
+        } 
     },
 
     //初始化配置
     init:{
-        renderer:'canavs',
+        renderer:'canvas',
         devicePixelRatio:4,
         width: 'auto',
         height: 300,
