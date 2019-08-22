@@ -1,67 +1,48 @@
 <template>
-    <div :ref="lineRef"></div>
+    <div :ref="DOM_REF"></div>
 </template>
 <script>
 import zrender from 'zrender'
-import { random } from './util/algorithms'
-import { default_config } from './util/config/default.config'
-import { line_config } from './util/config/line.config'
-import { render_grid,render_axis,chart_lines,pointer } from './util/render'
+import { random } from './algorithms'
+import { default_config } from './config/default.config'
+import { line_config } from './config/line.config'
+import { line_bar_render } from './render/line.render'
+
+//渲染
+
 export default {
     data(){
-        return{
-            RAW_OBJ:null, //最终在页面渲染的实例对象
-            lineRef:`whale_line_${random(5)}`,
-
-            ShowConfig:{},     //最终显示在页面上的配置
-
+        return {
+            CHART:null,                         //最终的图表实例
+            DOM_REF:`whale_line_${random(5)}`,  //refs
+            ROW_CONFIG:{}                       //最终合并完成的 config
         }
     },
     props:{
-        //数据
         opction:{
-            type:[Object,Array],
+            type:Object,
             default(){
                 return {}
             }
         }
     },
     mounted(){
-        //初始化
-        let merge_config = Object.assign(default_config,line_config),
-            opt = Object.assign({},merge_config.init); //生成一个新对象 ,避免多图重复 永远不要试图修改 默认配置
-            
-        zrender.util.merge(opt,this.opction.init,true)
-        //最终实例
-        let w_line = zrender.init(this.$refs[this.lineRef],opt)
-        this.RAW_OBJ = w_line
+        zrender.util.merge(this.ROW_CONFIG,default_config,true)
+        zrender.util.merge(this.ROW_CONFIG,line_config,true)
+        zrender.util.merge(this.ROW_CONFIG,this.opction,true)
 
-        zrender.util.merge(this.ShowConfig,merge_config,true)
-        zrender.util.merge(this.ShowConfig,this.opction,true)
+        this.CHART = zrender.init(this.$refs[this.DOM_REF],{
+            renderer:           this.ROW_CONFIG.init.renderer,
+            devicePixelRatio:   this.ROW_CONFIG.init.devicePixelRatio,
+            width:              this.ROW_CONFIG.init.width,
+            height:             this.ROW_CONFIG.dpr(this.ROW_CONFIG.init.height),
+        })
 
-        // // //开始渲染全部
-        this.renderAll()
-    },
-    methods:{
-        //所有的形状渲染
-        renderAll(){
-            let _chart = chart_lines(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
-            let _axis = render_axis(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
-            let _grid = render_grid(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
-            let _pointer = pointer(zrender,this.RAW_OBJ,this.opction,this.ShowConfig)
-
-
-            
-            this.RAW_OBJ.add(_chart)
-            this.RAW_OBJ.add(_axis)
-            this.RAW_OBJ.add(_grid)
-            this.RAW_OBJ.add(_pointer)
-
-
-
-
-        },
+        line_bar_render({
+            zrender,
+            CHART:this.CHART,
+            ROW_CONFIG:this.ROW_CONFIG
+        })
     }
 }
 </script>
-
