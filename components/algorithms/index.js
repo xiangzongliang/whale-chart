@@ -139,22 +139,14 @@ let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,devi
 
         g_height = diff.height,
         g_width = diff.width,
-        box = ROW_CONFIG.box,
+        _box_ = ROW_CONFIG._box_,
 
         //点坐标集合
         points = [], 
         zero_axis,
-        cutting_X = ROW_CONFIG.grid.horizontal.num, //把画布的高度分为几段
+        cutting_X = ROW_CONFIG.grid.horizontal.num //把画布的高度分为几段
 
-        _box_ = arr_zoom({
-            arr:box,
-            dpr:ROW_CONFIG.dpr
-        })
-
-        /**
-         * 重新赋值 box 这将对不同机型兼容计算有好处
-         */
-        ROW_CONFIG._box_ = _box_
+        
        
 
         let {
@@ -212,12 +204,17 @@ let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,devi
 
 
         for(let ai in arr){
-            let x = (g_width - _box_.left - _box_.right) / (total-1) * (parseInt(ai)) + _box_.left,
+            let x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2,
                 y = 0;
 
             //柱状图或者混合图需要的偏移   
-            if(deviation){
-                x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2
+            // if(deviation){
+            //     x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2
+            // }
+
+            //如果只有一条数据
+            if(total <= 1){
+                x = (g_width - _box_.left - _box_.right - deviation) / 2 + _box_.left + deviation/2
             }
             
 
@@ -242,6 +239,83 @@ let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,devi
             diff,
             points,
         }
+}
+
+/**
+ * 和上面的方法作用相似
+ * 是为了计算靠右侧的坐标以及对应的坐标点
+ */
+let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, deviation=0 }) => {
+    let diff = Object.assign({},maxDiff(arr),{
+        width:_DIFF.width,
+        height:_DIFF.height
+    }),
+    min = diff.min,
+    max = diff.max,
+    line_diff = _DIFF.all_points[0].diff, //获取第一个折线图的 diff
+    all_line = line_diff.all_line,
+    zero_top = 0,
+    zero_bottom = 0,
+    reset = {}
+
+
+
+
+    if(diff.max <= 0){ //点全部在 0 轴以下
+        zero_bottom = all_line
+        max = 0
+    }else if(diff.min >= 0){ //点全部在 0 轴以上
+        zero_top = all_line
+        min = 0
+    }else{ 
+        let item_H = sign_num((diff.abs_max + diff.abs_min) / all_line,true)
+        zero_top = Math.ceil(Math.abs(max)/item_H)
+        zero_bottom = Math.ceil(Math.abs(min)/item_H)
+
+        console.log(item_H,zero_top,zero_bottom)
+
+        var calc_zero = function({zero_top,zero_bottom,item_H}){
+            if((zero_top + zero_bottom) == all_line){
+                return {
+                    n_zero,
+                    n_zero_top,
+                    n_zero_bottom
+                }
+            }else{
+                let n_item_H = sign_num((zero_top + zero_bottom) * item_H / all_line,true),
+                    n_zero_top = Math.ceil(Math.abs(max)/n_item_H),
+                    n_zero_bottom = Math.ceil(Math.abs(min)/n_item_H)
+                return calc_zero({
+                    zero_top:n_zero_top,
+                    zero_bottom:n_zero_bottom,
+                    item_H:n_item_H
+                })
+            }
+        }
+
+        // reset = calc_zero({
+        //     zero_top,
+        //     zero_bottom,
+        //     item_H
+        // })
+        // console.log(reset)
+
+
+        
+    }
+
+
+    diff = Object.assign({},line_diff,diff,{
+        zero_top:reset.n_zero_top,   //0 轴以上多少背景横线
+        zero_bottom:reset.n_zero_bottom, //0 轴以下多少背景横线
+        deviation, //是否存在绘制偏移
+    })
+    console.log(diff)
+
+    return {
+        diff
+    }
+
 }
 
 
@@ -368,6 +442,7 @@ export {
     maxDiff,
     random,
     calc_point,
+    calc_right_point,
     adjacent,
     cutter,
     percentage,

@@ -4,6 +4,7 @@
 let default_config = {
     //这是一个计算公式 将所有配置的值经过计算 得出 px 的单位 
     dpr:(val)=>{
+        let dpr = window.dpr || 1
         if(typeof val === 'number'){
             return val*dpr
         }else{
@@ -19,7 +20,7 @@ let default_config = {
     //初始化配置
     init:{
         renderer:'canvas',
-        devicePixelRatio:4,
+        devicePixelRatio: 2,
         width: 'auto',
         height: 300,
         autoWidth:false, //当浏览器窗口宽度发生变化时,图表宽度自动变化 默认 false 当宽度值为auto的时候该属性生效

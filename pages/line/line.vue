@@ -7,6 +7,34 @@
 import blendChart from '@/components/line.vue'
 export default {
     data(){
+        let dataArr = []
+        for(let i=0;i<1;i++){
+            dataArr.push(...[{
+                    name:'小明',
+                    key:3,
+                    val:'-0.5',
+                    calc:-1,
+                    per:81
+                },{
+                    name:'张三',
+                    key:4,
+                    val:-2,
+                    calc:-2,
+                    per:20
+                },{
+                    name:'老王',
+                    key:-2.5,
+                    val:3,
+                    calc:-2.2,
+                    per:40
+                },{
+                    name:'未知',
+                    key:6,
+                    val:1,
+                    calc:-1.33333,
+                    per:-1
+                }])
+        }
         return {
             chartOpction:{
                 box:{
@@ -20,9 +48,11 @@ export default {
                     }
                 },
                 columns:[{
-                    key:'key',//需要展示成线的key
-                    type:'bar',
-                    // axis:'right',
+                    key:'key'
+                },{
+                    key:'per',//需要展示成线的key
+                    // type:'bar',
+                    axis:'right',
                     // line:{
                         // smooth:0.3,
                         // style:{}
@@ -30,32 +60,10 @@ export default {
 
                 },{
                     key:'val',
-                },{
-                    key:'calc',
-                    // type:'bar'
+                    type:'bar'
                 }],
                 //数据集合
-                chartData:[{
-                    name:'小明',
-                    key:3,
-                    val:'-0.5',
-                    calc:-1
-                },{
-                    name:'张三',
-                    key:4,
-                    val:-2,
-                    calc:-2
-                },{
-                    name:'老王',
-                    key:-2.5,
-                    val:0,
-                    calc:-2.2
-                },{
-                    name:'未知',
-                    key:6,
-                    val:1,
-                    calc:-1.33333
-                }],
+                chartData:dataArr,
                 axis:{
                     bottom:{
                         interval:{
@@ -118,9 +126,13 @@ export default {
                     //     ctx.next()
                     // }
                 // },
-                tips:{
-                    render:(ctx,zrender)=>{}
-                },
+                event:{
+                    pointer:{
+                        update:(opction)=>{
+                            // console.log(this,opction)
+                        }
+                    }
+                }
             }
         }
     },

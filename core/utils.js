@@ -34,7 +34,7 @@ const isTypeof = agu =>{
 const w_htmlPlugin = () =>{
     let htmlPlugin = []
     for(k in PAGES){
-        let default_chunks = ['common','vue-vendor','zrender','vendor',`${k}`,`whale_${k}`,'vendors_css'],
+        let default_chunks = ['common','vue-vendor','vendor','zrender',`${k}`,`whale_${k}`,'vendors_css'],
             chunks = [],    // 手动注入 Chunks
             excludeChunks = [], //需要排除的 Chunks
             htmlOutputPath = PAGES[k].htmlOutputPath ? PAGES[k].htmlOutputPath : ''; //将 html 文件输出到指定的路径

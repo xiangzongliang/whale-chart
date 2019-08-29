@@ -99,8 +99,12 @@ let axis_bottom = ({zrender, ROW_CONFIG, _DIFF}) =>{
 
 
 
-let axis_left = () => {}
-let axis_right = () => {}
+let axis_left = ({zrender, ROW_CONFIG, _DIFF}) => {
+
+}
+let axis_right = ({zrender, ROW_CONFIG, _DIFF}) => {
+
+}
 
 export{
     axis_bottom,

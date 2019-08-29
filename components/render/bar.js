@@ -35,25 +35,33 @@ let render_bar = ({ zrender, ROW_CONFIG, _DIFF }) =>{
                     zlevel:100
                 })
                 bar_group.add(render_bar)
+                
 
+                if(bar.textShow === true){
+                    //绘制柱状图上的文字
+                    let bar_text = chartData[bi][key],
+                        text_X = points[bi][0] - current_seat + before_seat - deviation / 2 + forward + bar.width / 2,
+                        text_Y = points[bi][1]
 
-                // if(bar.textShow === true){
-                //     //绘制柱状图上的文字
-                //     let render_bar_text = new zrender.Rect({
-                //         shape:{
-                //             //这里的X计算需要优化
-                //             x:points[bi][0] - current_seat + before_seat - deviation / 2 + forward + bar.width / 2,
-                //             y:points[bi][1]
-                //         },
-                //         style:Object.assign({},bar.textStyle,{
-                //             text:chartData[bi][key],
-                //             textAlign:'center',
-                //             textPosition:[0,dpr(-15)]
-                //         }),
-                //         zlevel:500
-                //     })
-                //     bar_group.add(render_bar_text)
-                // }
+                        //对小于 0 的值显示位置发生变化
+                        if(bar_text < 0){
+                            text_Y = points[bi][1] + dpr(15)
+                        }
+                    let render_bar_text = new zrender.Rect({
+                        shape:{
+                            //这里的X计算需要优化
+                            x: text_X,
+                            y: text_Y
+                        },
+                        style:Object.assign({},bar.textStyle,{
+                            text: bar_text,
+                            textAlign:'center',
+                            textPosition:[0,dpr(-15)]
+                        }),
+                        zlevel:500
+                    })
+                    bar_group.add(render_bar_text)
+                }
                 
             }
             before_seat = before_seat + bar.width + bar.interval

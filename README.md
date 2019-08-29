@@ -12,6 +12,8 @@ line = 200
 bar_text = 500
 line _text = 500
 
-pointer = 800
+pointer = {
+    zlevel:800
+}
 
 

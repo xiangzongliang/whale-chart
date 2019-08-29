@@ -4,7 +4,7 @@ let line_config = {
         top:30,
         bottom:25,
         left:60,
-        right:20
+        right:60
     },
     //颜色数组
     colors:['#588EEB','#CCA663','#9800FF','#DF6666','#6AA84F'],
@@ -105,18 +105,18 @@ let line_config = {
                 lineWidth:0.5,
                 stroke:"#CCA663",
                 lineDash:[0],
-                zlevel:999,
             }
         },
         //折线图的转折点 [ line ]
         point:{
-            show:true, //是否显示转折点 
+            show:false, //是否显示转折点 
             item:[{
                 shape:{
                     r:2,
                 },
                 style:{
                     fill:'#fff',
+                    lineWidth:1
                 }
             }],
 
@@ -146,10 +146,10 @@ let line_config = {
         },
         //提示 [ all ]
         tip:{
-            show:false,
-            formatter(text,data){
-                return text
-            },
+            show:true,
+            // formatter(text,data){
+            //     return text
+            // },
             style:{
                 textBackgroundColor:'rgba(0,0,0,0.5)',
                 textBorderColor:'rgba(153, 153, 153, 0.25)',
@@ -157,33 +157,33 @@ let line_config = {
                 textBoxShadowBlur:3,
                 textBorderRadius:2,
                 textPadding:[10,20],
-                rich:{
-                    _title:{
-
-                    },
-                    _key:{
-                        fontSize:14,
-                        textFill:'#fff',
-                        fontWeight:400
-                    },
-                    _val:{
-                        textPadding:[0,0,0,10],
-                        textFill:'#fff',
-                        fontSize:14,
-                        fontWeight:400
+                rich({dpr ,arr_zoom}){
+                    return {
+                        _key:{
+                            fontSize:dpr(14),
+                            textFill:'#fff',
+                            fontWeight:400
+                        },
+                        _val:{
+                            textPadding: arr_zoom({
+                                arr:[0,0,0,10],
+                                dpr
+                            }),
+                            textFill:'#fff',
+                            fontSize:dpr(14),
+                            fontWeight:400
+                        }
                     }
-                },
-                zlevel:1000,
+                }
             }
         }
-
     },
     //背景网格 [ line | bar ]
     grid:{
         show:true,
         horizontal:{
             show:true,  //是否显示
-            num:4,      //线条数量
+            num:5,      //线条数量
             lineStyle:{
                 lineWidth:0.5,
                 stroke:"#CCCCCC",
@@ -191,6 +191,18 @@ let line_config = {
             }
         }
     },
+    event:{
+        pointer:{
+            //指示器更新之后回调
+            update:(opction)=>{}
+        },
+        //图表渲染之前
+        // start(){},
+        //图表渲染结束
+        // end(){},
+        //图表被更新
+        // update(){} 
+    }
 }
 export {
     line_config

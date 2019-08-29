@@ -1,12 +1,13 @@
-import { calc_point } from '../algorithms'
+import { calc_point, arr_zoom, calc_right_point } from '../algorithms'
 import { render_grid } from './grid'
 import { axis_bottom } from './axis'
 import { render_line } from './line'
 import { render_bar } from './bar'
+import { vertical_pointer } from './pointer'
 /**
  * 折线图和条形图的渲染统一入口 (包括混合图)
  */
-let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
+let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
     let dpr = ROW_CONFIG.dpr,
         columns = ROW_CONFIG.columns || [],         //需要显示的数据 
         get_color = (index) => {
@@ -20,7 +21,7 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
                 interval:dpr(2), //默认间隔
                 textShow:true,  //是否显示柱状图的文字
                 textStyle:{     //柱状图文字样式
-                    textFill:'#333',
+                    textFill:'#666',
                     fontSize:dpr(12)
                 },
                 style:{
@@ -48,7 +49,9 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
         _DIFF = {
             width:  CHART.getWidth(),
             height: CHART.getHeight(),
-            all_points: []      //所有点的集合   包括折线图和柱状图
+            all_points: [],      //所有点的集合   包括折线图和柱状图
+            left_axis_points: [],   //基于左侧轴的所有点的集合
+            right_axis_points:[]    //基于右侧点的所有点的集合
         },
 
 
@@ -56,7 +59,17 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
          * 下面两个是特殊值
          */
         deviation = 0,    //当有多个柱形图时,计算出每一组柱形图的占用宽度,从而计算柱形图位移的距离
-        forward = 0         //需要基于第一个绘制的柱状图偏移的中心距离
+        forward = 0,         //需要基于第一个绘制的柱状图偏移的中心距离
+
+        _box_ = arr_zoom({
+            arr:ROW_CONFIG.box,
+            dpr:ROW_CONFIG.dpr
+        })
+
+        /**
+         * 重新赋值 box 这将对不同机型兼容计算有好处
+         */
+        ROW_CONFIG._box_ = _box_
 
 
     /**
@@ -99,7 +112,8 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
             axis = columns[r_ci].axis == 'right' ? 'right' : 'left',
             bar = get_bar(r_ci),
             line = get_line(r_ci),
-            get_point = {}
+            get_left_point = {},
+            get_right_point = {}
 
 
             for(let r_li in chartData){
@@ -108,7 +122,7 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
 
 
             if(axis == 'left'){
-                get_point = calc_point({
+                get_left_point = calc_point({
                     ROW_CONFIG,
                     _DIFF,
                     allarr: all_data_left,
@@ -116,8 +130,21 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
                     total:  cur_arr.length,
                     deviation:deviation
                 })
+
+                _DIFF.left_axis_points.push({
+                    type,
+                    axis,
+                    key,
+                    bar,
+                    line,
+                    deviation,
+                    forward,
+                    diff :          get_left_point.diff,
+                    points :        get_left_point.points
+                })
+                console.log('left',get_left_point)
             }else{
-                get_point = calc_point({
+                get_right_point = calc_right_point({
                     ROW_CONFIG,
                     _DIFF,
                     allarr: all_data_right,
@@ -125,6 +152,19 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
                     total:  cur_arr.length,
                     deviation:deviation
                 })
+
+                // _DIFF.right_axis_points.push({
+                //     type,
+                //     axis,
+                //     key,
+                //     bar,
+                //     line,
+                //     deviation,
+                //     forward,
+                //     diff :          get_right_point.diff,
+                //     points :        get_right_point.points
+                // })
+                console.log('right',get_right_point)
             }
 
             /**
@@ -138,8 +178,8 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
                 line,
                 deviation,
                 forward,
-                diff :          get_point.diff,
-                points :        get_point.points
+                diff :          get_left_point.diff,
+                points :        get_left_point.points
             })
     }
 
@@ -149,7 +189,7 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
         ROW_CONFIG,
         _DIFF
     }),
-    RD_axis = axis_bottom({
+    RD_axis_btm = axis_bottom({
         zrender,
         ROW_CONFIG,
         _DIFF
@@ -163,6 +203,14 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
         zrender,
         ROW_CONFIG,
         _DIFF
+    }),
+    RD_ind = vertical_pointer({
+        zrender,
+        ROW_CONFIG,
+        get_color,
+        CHART,
+        _DIFF,
+        REFS
     })
 
 
@@ -170,9 +218,10 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={} }) =>{
 
 
     CHART.add(RD_bg)
-    CHART.add(RD_axis)
+    CHART.add(RD_axis_btm) 
     CHART.add(RD_line)
     CHART.add(RD_bar)
+    CHART.add(RD_ind) //指示器
 
 
 }
