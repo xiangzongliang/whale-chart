@@ -14,7 +14,7 @@ export default {
                     key:3,
                     val:'-0.5',
                     calc:-1,
-                    per:81
+                    per:82.33
                 },{
                     name:'张三',
                     key:4,
@@ -48,7 +48,7 @@ export default {
                     }
                 },
                 columns:[{
-                    key:'key'
+                    key:'key',
                 },{
                     key:'per',//需要展示成线的key
                     // type:'bar',

@@ -113,7 +113,25 @@ let get_zero = () =>{
 
 }
 
-
+/**
+ * 
+ * @param {*} diff:
+        abs_max: 6      //最大值的绝对值
+        abs_min: 2.5    //最小值的绝对值
+        all_line: 5     //总共有几条横线
+        cut: 2          //背景分割线的每一段的值 || 注意不是分段高度 是用来对应每段值的大小
+        deviation: 30   //是否存在偏移 主要在计算柱状图的时候使用
+        height: 600     //canvas 总高度
+        isN: true       //数据中是否有负数 左侧轴是统计所有左侧的数据是否有负数,右侧轴则是统计当前数组中是否有负数
+        item_H: 92      //背景网格每段的 高度
+        max: 6          //最大值
+        max_diff: 6     //与 0 轴偏移的最大值
+        min: -2.5       //最小值
+        width: 640      //canvas 的宽度
+        zero_axis: 336  // 0 轴的Y坐标
+        zero_bottom: 2  // 0 轴以下有几条线
+        zero_top: 3     // 0 轴以上有几条线
+ */
 /**
  * 通过一系列数组计算出每个点在坐标轴中的位置
  * 也是核心折线图和柱状图的数据分析模块
@@ -250,13 +268,15 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
         width:_DIFF.width,
         height:_DIFF.height
     }),
+    _box_ = ROW_CONFIG._box_,
     min = diff.min,
     max = diff.max,
     line_diff = _DIFF.all_points[0].diff, //获取第一个折线图的 diff
     all_line = line_diff.all_line,
     zero_top = 0,
     zero_bottom = 0,
-    reset = {}
+    reset = {},
+    points = [];
 
 
 
@@ -268,54 +288,69 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
         zero_top = all_line
         min = 0
     }else{ 
-        let item_H = sign_num((diff.abs_max + diff.abs_min) / all_line,true)
-        zero_top = Math.ceil(Math.abs(max)/item_H)
-        zero_bottom = Math.ceil(Math.abs(min)/item_H)
+        /**
+         * 这里主要是通过数值来匹配坐标轴
+         * 反向匹配
+         */
 
-        console.log(item_H,zero_top,zero_bottom)
+        let cut = sign_num((diff.abs_max + diff.abs_min) / all_line,true)
+        zero_top = Math.ceil(Math.abs(max)/cut)
+        zero_bottom = Math.ceil(Math.abs(min)/cut)
 
-        var calc_zero = function({zero_top,zero_bottom,item_H}){
+
+
+        var calc_zero = function({zero_top,zero_bottom,cut}){
             if((zero_top + zero_bottom) == all_line){
                 return {
-                    n_zero,
-                    n_zero_top,
-                    n_zero_bottom
+                    cut,
+                    zero_top,
+                    zero_bottom
                 }
-            }else{
-                let n_item_H = sign_num((zero_top + zero_bottom) * item_H / all_line,true),
-                    n_zero_top = Math.ceil(Math.abs(max)/n_item_H),
-                    n_zero_bottom = Math.ceil(Math.abs(min)/n_item_H)
+            }else{ //说明 item_H 小了  切分的段落就会多 
+                let n_cut = (zero_top + zero_bottom) * cut / all_line, //注意这里严格取值   不需要模糊算法
+                    n_zero_top = Math.ceil(Math.abs(max)/n_cut),
+                    n_zero_bottom = Math.ceil(Math.abs(min)/n_cut)
+
+                
                 return calc_zero({
                     zero_top:n_zero_top,
                     zero_bottom:n_zero_bottom,
-                    item_H:n_item_H
+                    cut:n_cut
                 })
             }
         }
 
-        // reset = calc_zero({
-        //     zero_top,
-        //     zero_bottom,
-        //     item_H
-        // })
-        // console.log(reset)
-
-
-        
+        reset = calc_zero({
+            zero_top,
+            zero_bottom,
+            cut
+        }) 
     }
 
 
     diff = Object.assign({},line_diff,diff,{
-        zero_top:reset.n_zero_top,   //0 轴以上多少背景横线
-        zero_bottom:reset.n_zero_bottom, //0 轴以下多少背景横线
+        cut:reset.cut,
+        zero_top:reset.zero_top,   //0 轴以上多少背景横线
+        zero_bottom:reset.zero_bottom, //0 轴以下多少背景横线
         deviation, //是否存在绘制偏移
     })
-    console.log(diff)
 
-    return {
-        diff
+
+
+    //循环输出点
+    for(let ri in arr){
+        let x = (diff.width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ri)) + _box_.left + deviation/2,
+            y = 0;
+        console.log(arr[ri])
+
+        points.push([x,y])
     }
 
+
+    return {
+        diff,
+        points
+    }
 }
 
 
