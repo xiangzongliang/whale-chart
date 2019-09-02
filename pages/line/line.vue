@@ -12,34 +12,35 @@ export default {
             dataArr.push(...[{
                     name:'小明',
                     key:3,
-                    val:'-0.5',
+                    val:8.2,
                     calc:-1,
-                    per:82.33
+                    per:90
                 },{
                     name:'张三',
                     key:4,
-                    val:-2,
+                    val:1,
                     calc:-2,
                     per:20
                 },{
                     name:'老王',
-                    key:-2.5,
-                    val:3,
+                    key:7,
+                    val:0,
                     calc:-2.2,
                     per:40
                 },{
                     name:'未知',
                     key:6,
-                    val:1,
+                    val:-1,
                     calc:-1.33333,
-                    per:-1
+                    per:10
                 }])
         }
         return {
             chartOpction:{
                 box:{
                     left:50,
-                    bottom:40
+                    bottom:40,
+                    right:50
                 },
                 //维度
                 dimension:{
@@ -49,18 +50,19 @@ export default {
                 },
                 columns:[{
                     key:'key',
+                    // type:'bar'
+                },{
+                    key:'val',
+                    // type:'bar'
                 },{
                     key:'per',//需要展示成线的key
-                    // type:'bar',
+                    type:'bar',
                     axis:'right',
                     // line:{
                         // smooth:0.3,
                         // style:{}
                     // }
 
-                },{
-                    key:'val',
-                    type:'bar'
                 }],
                 //数据集合
                 chartData:dataArr,
@@ -88,6 +90,18 @@ export default {
                         formatter:(val)=>{
                             // return val
                             return [val.toFixed(2),'{year|2019}'].join('\n')
+                        },
+                        textStyle:{
+                            rich:{
+                                year:{
+                                    textFill:'#ff8800'
+                                }
+                            }
+                        }
+                    },
+                    right:{
+                        formatter:(val)=>{
+                            return [val,'{year|2019}'].join('\n')
                         },
                         textStyle:{
                             rich:{

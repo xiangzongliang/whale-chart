@@ -143,7 +143,7 @@ let get_zero = () =>{
  * @param {*} _diff         //差值  用于存储核心计算需要的值,在其他地方只可读取不可赋值
  * @param {*} deviation     //偏移 主要用于柱状图的绘制偏移
  */
-let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,deviation=0}) => {
+let _calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,deviation=0}) => {
     let diff = Object.assign({},maxDiff(allarr),{
         width:_DIFF.width,
         height:_DIFF.height
@@ -215,11 +215,6 @@ let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,devi
             deviation //是否存在绘制偏移
         })
 
-        // Object.defineProperty(ShowConfig, '_diff', {
-        //     value: diff,
-        //     writable: false,        //禁止被修改
-        // });
-
 
         for(let ai in arr){
             let x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2,
@@ -259,11 +254,44 @@ let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,devi
         }
 }
 
+let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, deviation=0}) => {
+    let diff =  Object.assign({},maxDiff(allarr)),
+        points = [],
+        item_num = ROW_CONFIG.grid.horizontal.num || 3, //把画布的高度分为几段
+        max = diff.max,
+        min = diff.min
+
+
+        //特殊处理
+        if(max<0){ //全部为负数
+            max = 0
+        }else if(min>0){ //全部为正数字
+            min>0
+        }else{  //正负数都有
+
+        }
+
+
+
+
+
+    
+    return {
+        diff,
+        points,
+    }
+}
+
+
+
 /**
  * 和上面的方法作用相似
  * 是为了计算靠右侧的坐标以及对应的坐标点
  */
 let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, deviation=0 }) => {
+    // if(_DIFF.all_points.length <= 0){
+    //     return
+    // }
     let diff = Object.assign({},maxDiff(arr),{
         width:_DIFF.width,
         height:_DIFF.height
@@ -271,22 +299,31 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
     _box_ = ROW_CONFIG._box_,
     min = diff.min,
     max = diff.max,
+    max_diff = diff.max_diff,
+    isN = diff.isN,
+    abs_max = diff.abs_max,
+    abs_min = diff.abs_min,
     line_diff = _DIFF.all_points[0].diff, //获取第一个折线图的 diff
     all_line = line_diff.all_line,
     zero_top = 0,
     zero_bottom = 0,
-    reset = {},
+    cut = sign_num((diff.abs_max + diff.abs_min) / all_line,true),
+    reset = {
+        zero_top,
+        zero_bottom,
+        cut
+    },
     points = [];
-
-
 
 
     if(diff.max <= 0){ //点全部在 0 轴以下
         zero_bottom = all_line
         max = 0
+        reset.zero_bottom = all_line
     }else if(diff.min >= 0){ //点全部在 0 轴以上
         zero_top = all_line
         min = 0
+        reset.zero_top = all_line
     }else{ 
         /**
          * 这里主要是通过数值来匹配坐标轴
@@ -299,7 +336,7 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
 
 
 
-        var calc_zero = function({zero_top,zero_bottom,cut}){
+        let calc_zero = function({zero_top,zero_bottom,cut}){
             if((zero_top + zero_bottom) == all_line){
                 return {
                     cut,
@@ -327,13 +364,21 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
         }) 
     }
 
-
+    let zero_axis = _box_.top + line_diff.item_H * reset.zero_top
     diff = Object.assign({},line_diff,diff,{
         cut:reset.cut,
+        zero_axis,
         zero_top:reset.zero_top,   //0 轴以上多少背景横线
         zero_bottom:reset.zero_bottom, //0 轴以下多少背景横线
         deviation, //是否存在绘制偏移
     })
+
+
+    //重置最大值最小值和绝对值
+    max = reset.cut * reset.zero_top
+    min = reset.cut * reset.zero_bottom * -1
+    abs_max = Math.abs(max)
+    abs_min = Math.abs(min)
 
 
 
@@ -341,11 +386,28 @@ let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, d
     for(let ri in arr){
         let x = (diff.width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ri)) + _box_.left + deviation/2,
             y = 0;
-        console.log(arr[ri])
+        // console.log(arr[ri])
 
+        //如果只有一条数据
+        if(total <= 1){
+            x = (diff.width - _box_.left - _box_.right - deviation) / 2 + _box_.left + deviation/2
+        }
+
+
+        if(isN === true){//如果有负数
+            if(arr[ri] > 0){
+                y = diff.zero_axis - arr[ri] / max * (diff.item_H * diff.zero_top)
+            }else if(arr[ri] == 0){
+                y = diff.zero_axis
+            }else{
+                y = diff.zero_axis + (arr[ri] / abs_min * -1 * (diff.item_H * diff.zero_bottom) )
+            }
+        }else{//都为正数 0 被包含在正数中
+            max_diff = abs_max
+            y = (diff.height - _box_.top - _box_.bottom) - (arr[ri] / max_diff * (diff.height - _box_.top - _box_.bottom)) + _box_.top
+        }
         points.push([x,y])
     }
-
 
     return {
         diff,
@@ -425,7 +487,7 @@ let cutter = ({max,min,len,height})=>{
  *          num 占数组集合总和的百分比
  */
 let percentage = ({arr=[],num=0})=>{
-    console.log(arr)
+    // console.log(arr)
 }
 
 

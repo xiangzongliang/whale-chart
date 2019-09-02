@@ -2,9 +2,9 @@ let line_config = {
     //图表盒子模型
     box:{
         top:30,
-        bottom:25,
-        left:60,
-        right:60
+        bottom:30,
+        left:50,
+        right:20
     },
     //颜色数组
     colors:['#588EEB','#CCA663','#9800FF','#DF6666','#6AA84F'],
@@ -77,19 +77,23 @@ let line_config = {
         },
         // [ line | bar ] //适合双轴
         right:{
-            show:true,
-            line:{
-                show:true,
-                style:{
-
-                }
+            paddingRight:10,
+            lineStyle:{
+                show:false,
+                lineWidth:1,
+                stroke:"#ccc",
+                lineDash:[0],
             },
-            text:{
-                show:true,
-                style:{
-
-                }
-            }
+            textStyle:{
+                fontWeight:400,
+                fontSize:12,
+                textFill:"#666666",
+                textAlign: "left",
+                textVerticalAlign:"middle"
+            },
+            formatter:(val)=>{
+                return val
+            },
         },
         // render:(ctx,zrender)=>{
 

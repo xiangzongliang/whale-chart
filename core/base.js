@@ -39,7 +39,7 @@ module.exports = {
         mainFields: [ 'jsnext:main', 'browser', 'main' ]        //查找模块的 package.json 文件之后 入口加载的优先顺序
     },
 
-    devtool:false,  //直接关闭，使用VUE插件在浏览器端调试
+    devtool:'inline-source-map' ||false,  //直接关闭，使用VUE插件在浏览器端调试
     cache:{},//缓存生成的 webpack 模块和 chunk，来改善构建速度
 
     //性能
