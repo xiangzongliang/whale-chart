@@ -4,10 +4,21 @@ import { axis_bottom, axis_left, axis_right } from './axis'
 import { render_line } from './line'
 import { render_bar } from './bar'
 import { vertical_pointer } from './pointer'
+import print_log from './log'
 /**
  * 折线图和条形图的渲染统一入口 (包括混合图)
  */
 let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
+    //判断是否渲染
+    if(ROW_CONFIG.chartData && ROW_CONFIG.chartData.length<=0){
+        print_log('noData')
+        return;
+    }
+    if(ROW_CONFIG.columns && ROW_CONFIG.columns.length<=0){
+        print_log('noCol')
+        return;
+    }
+
     let dpr = ROW_CONFIG.dpr,
         columns = ROW_CONFIG.columns || [],         //需要显示的数据 
         get_color = (index) => {
@@ -120,7 +131,7 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
                 cur_arr.push(chartData[r_li][key])
             }
 
-
+            let all_points_item;
             if(axis == 'left'){
                 get_left_point = calc_point({
                     ROW_CONFIG,
@@ -130,22 +141,10 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
                     total:  cur_arr.length,
                     deviation:deviation
                 })
-
-                _DIFF.left_axis_points.push({
-                    type,
-                    axis,
-                    key,
-                    bar,
-                    line,
-                    deviation,
-                    forward,
-                    diff :          get_left_point.diff,
-                    points :        get_left_point.points
-                })
                 /**
                  * deviation | forward 只有在存在柱状图的时候才会有这个参数  / deviation == 历史版本的 total_width
                  */
-                _DIFF.all_points.push({
+                all_points_item = {
                     type,
                     axis,
                     key,
@@ -155,9 +154,11 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
                     forward,
                     diff :          get_left_point.diff,
                     points :        get_left_point.points
-                })
+                }
+
+                _DIFF.left_axis_points.push(all_points_item)
             }else{
-                get_right_point = calc_right_point({
+                get_right_point = calc_point({
                     ROW_CONFIG,
                     _DIFF,
                     allarr: all_data_right,
@@ -166,7 +167,7 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
                     deviation:deviation
                 })
 
-                _DIFF.right_axis_points.push({
+                all_points_item = {
                     type,
                     axis,
                     key,
@@ -176,24 +177,12 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
                     forward,
                     diff :          get_right_point.diff,
                     points :        get_right_point.points
-                })
-                /**
-                 * deviation | forward 只有在存在柱状图的时候才会有这个参数  / deviation == 历史版本的 total_width
-                 */
-                _DIFF.all_points.push({
-                    type,
-                    axis,
-                    key,
-                    bar,
-                    line,
-                    deviation,
-                    forward,
-                    diff :          get_right_point.diff,
-                    points :        get_right_point.points
-                })
-            }
+                }
 
-            
+                _DIFF.right_axis_points.push(all_points_item)
+                
+            }
+            _DIFF.all_points.push(all_points_item)       
     }
 
 
@@ -247,8 +236,6 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
     CHART.add(RD_line)
     CHART.add(RD_bar)
     CHART.add(RD_ind) //指示器
-
-
 }
 
 export {

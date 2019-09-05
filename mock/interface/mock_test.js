@@ -1,34 +1,18 @@
 module.exports = (Mock) => {
     const Random = Mock.Random;
-    Mock.mock('/api/data','post', (req, res) => {
+    Mock.setup({
+        timeout: '100-200' // 表示响应时间介于 200 和 600 毫秒之间，默认值是'10-100'。
+    })
+    Mock.mock('/api/chart','post', (req, res) => {
         return Mock.mock({
-            "data|10-20":[{
-                'id': '@increment',
-                "xing|1-10": "★",
-                "ico":Random.image('200x100'),
-                "startDate":Random.date('yyyy-MM-dd'),
-                "CPU|1": [
-                    "AMD",
-                    "CMD",
-                    "UMD"
-                ]
+            "data|5-12":[{
+                'name': '@cword(2)',
+                "key|-10-10": 2,
+                "val|-5-5.2-2":0,
+                "pre|-100-100":0,
+                "age|20-40":20,
+                "time":Random.date('yyyy-MM-dd')
             }]
-        })
-    })
-
-    Mock.mock('/api/index','post', (req, res) => {
-        return Mock.mock({
-            "data":{
-                msg:'自定义的多页脚手架'
-            }
-        })
-    })
-    Mock.mock('/api/k','get', (req, res) => {
-        return Mock.mock({
-            "data":{
-                price:3215,
-                'k': '@float(2893.5, 3536.5,0,2)'
-            }
         })
     })
 }

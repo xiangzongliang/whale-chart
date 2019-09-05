@@ -62,11 +62,11 @@ let axis_bottom = ({zrender, ROW_CONFIG, _DIFF}) =>{
 
 
         //处理第一个最后一个的对齐方式
-        if(ai == 0){
-            textAlign = 'left'
-        }else if(ai == points.length - 1){
-            textAlign = 'right'
-        }
+        // if(ai == 0){
+        //     textAlign = 'left'
+        // }else if(ai == points.length - 1){
+        //     textAlign = 'right'
+        // }
         
 
         if(type == 'between'){

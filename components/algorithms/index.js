@@ -84,7 +84,7 @@ let maxDiff = (arr,sub) => {
             max_diff:callback_max,  //最大差值 距离0
             isN:isNegative,     //是否有负数
             abs_max:abs_max,    //最大值的绝对值
-            abs_min:abs_min     //最小值的绝对值
+            abs_min:abs_min,     //最小值的绝对值
         }
 }
 
@@ -103,6 +103,23 @@ let random = (len) => {
         callback += str.charAt(Math.floor(Math.random() * maxPos))
     }
 　　return `${callback}${onlyId}`;
+}
+
+/**
+ * 移除数组中不正常的数据类型  转换为 ''
+ * @param {*} arr 
+ */
+let Remove_unusual = (arr) =>{
+    let new_arr = []
+    for(let ri in arr){
+        let item = parseFloat(arr[ri])
+        if(isNaN(item)){
+            new_arr.push('')
+        }else{
+            new_arr.push(arr[ri])
+        }
+    }
+    return new_arr
 }
 
 /**
@@ -143,277 +160,155 @@ let get_zero = () =>{
  * @param {*} _diff         //差值  用于存储核心计算需要的值,在其他地方只可读取不可赋值
  * @param {*} deviation     //偏移 主要用于柱状图的绘制偏移
  */
-let _calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, total=0 ,deviation=0}) => {
-    let diff = Object.assign({},maxDiff(allarr),{
-        width:_DIFF.width,
-        height:_DIFF.height
-    }),
-        max_diff = diff.max_diff,
+
+let calc_point = ({ ROW_CONFIG={}, allarr=[], arr=[], _DIFF = {}, deviation=0}) => {
+    let _allarr = Remove_unusual(allarr),
+        _arr = Remove_unusual(arr),
+        diff =  Object.assign({},maxDiff(_allarr)),
+        _box_ = ROW_CONFIG._box_,
+        points = [],
+        item_num = ROW_CONFIG.grid.horizontal.num || 4, //把画布的高度分为几段
+        total = _arr.length,
         max = diff.max,
         min = diff.min,
-        isN = diff.isN, //是否有负数
-        abs_max = diff.abs_max,
-        abs_min = diff.abs_min,
-
-        g_height = diff.height,
-        g_width = diff.width,
-        _box_ = ROW_CONFIG._box_,
-
-        //点坐标集合
-        points = [], 
-        zero_axis,
-        cutting_X = ROW_CONFIG.grid.horizontal.num //把画布的高度分为几段
-
+        zero_axis = 0,      // 0 轴位置
+        item_H = (_DIFF.height - _box_.top - _box_.bottom) / item_num,         //每一段的高度
+        zero_top = 0,        // 0 轴以上有多少段
+        zero_bottom = 0,
+        DMU,
+        cut = 0                 //每一段对应数值 的 近似值
         
-       
-
-        let {
-            item_H,
-            cut,
-            zero_top,
-            zero_bottom,
-            all_line,
-            n_max,
-            n_min
-        } = cutter({
-            max,
-            min,
-            len:cutting_X,
-            height:g_height - _box_.top - _box_.bottom
-        })
+        
 
 
-
-        //重置最大值最小值和绝对值
-        max = n_max
-        min = n_min
-
-        //=========== 先要确定 0 轴的位置
-        if(min>=0){ //数组点全部在 0轴之上
-            zero_axis = g_height - _box_.bottom
-            min = 0
-        }else if(max <= 0){ //数组点全部在 0轴之下
-            zero_axis = _box_.top
+        /**
+         * 计算 0 轴以上多少段 
+         */
+        if(max <= 0){
             max = 0
-        }else{ //数组点 分为正负值都有
+            DMU = diff.abs_min
+        }else if(min >= 0){
+            min = 0
+            DMU = diff.abs_max
+        }else{
+            DMU = diff.max - diff.min
+        }
+            
+
+
+        cut = sign_num(DMU/item_num,true)
+
+
+
+        //这里是很核心的一个步骤
+        let max_surplus = Math.abs(max%cut),
+            min_surplus = Math.abs(min%cut)
+        cut = cut + (max_surplus + min_surplus) / item_num //特殊备注这行代码,不要随便修改它
+
+        zero_top = Math.ceil(Math.abs(max)/cut)
+        zero_bottom = Math.ceil(Math.abs(min)/cut)
+
+        item_H = (_DIFF.height - _box_.top - _box_.bottom) / (zero_top + zero_bottom)
+
+
+
+
+
+
+
+        //计算 0 轴
+        if(max <= 0){ //全部为负数
+            zero_axis = _box_.top
+        }else if(min > 0){ //全部为正数字
+            zero_axis = _DIFF.height - _box_.bottom
+        }else{ //正负数都有
             zero_axis =  item_H * zero_top + _box_.top
         }
 
+        let n_max = cut * zero_top,
+            n_min = cut * zero_bottom * -1,
+            abs_max = Math.abs(n_max),
+            abs_min = Math.abs(n_min)
+        if(abs_max >= abs_min){
+            diff.max_diff = abs_max
+        }else{
+            diff.max_diff = abs_min
+        }
 
-        abs_max = Math.abs(max)
-        abs_min = Math.abs(min)
-
-        //得到 0 轴以上多少段 ,0 轴一下多少段
+        
         Object.assign(diff,{
             zero_axis, //0轴位置
-            //all_points, //所有的点坐标集合
             item_H,  //画布被分割的每一段的高度
-            cut,    //数值被拆分成多少段之后的向上近似值
-            all_line,   //一共有多少横线
-            zero_top,   //0 轴以上多少背景横线
-            zero_bottom, //0 轴以下多少背景横线
-            deviation //是否存在绘制偏移
+            all_line:zero_top + zero_bottom,   //一共有多少横线
+            deviation, //是否存在绘制偏移
+            cut,        //每一段对应的值
+            zero_top,
+            zero_bottom
         })
+        
+        for(let ai in _arr){
+            let x = (_DIFF.width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2,
+                y = 0,
+                isBreak = false,   //当前的值是否为断点,主要用于折线图,绘制多段线使用
+                num = parseFloat(_arr[ai])
 
 
-        for(let ai in arr){
-            let x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2,
-                y = 0;
-
-            //柱状图或者混合图需要的偏移   
-            // if(deviation){
-            //     x = (g_width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ai)) + _box_.left + deviation/2
-            // }
+            if(isNaN(num)){ //有断点
+                isBreak = true
+                num = 0
+            }
 
             //如果只有一条数据
             if(total <= 1){
-                x = (g_width - _box_.left - _box_.right - deviation) / 2 + _box_.left + deviation/2
+                x = (_DIFF.width - _box_.left - _box_.right - deviation) / 2 + _box_.left + deviation/2
             }
-            
 
-            if(isN === true){//如果有负数
-                if(arr[ai] > 0){
-                    // y = zero_axis - (arr[ai] / abs_max * (zero_axis - _box_.top)) + _box_.top //   (g_height - _box_.top - _box_.bottom) + _box_.top - 
-                    y = zero_axis - arr[ai] / max * (item_H * zero_top) //+ _box_.top //   (g_height - box.top - box.bottom) + box.top - 
-                }else if(arr[ai] == 0){
+
+
+            if(diff.isN === true){//如果有负数
+                if(num > 0){
+                    y = zero_axis - num / abs_max * (zero_top * item_H)
+                }else if(num == 0){
                     y = zero_axis
                 }else{
-                    // y = (arr[ai] / abs_min * (g_height - box.top - box.bottom - zero_axis) * -1) + zero_axis + box.top
-                    y = zero_axis + (arr[ai] / abs_min * -1 * (item_H * zero_bottom) )
+                    y = zero_axis + (num / abs_min * (item_H * zero_bottom) * -1 )
                 }
             }else{//都为正数 0 被包含在正数中
-                y = (g_height - _box_.top - _box_.bottom) - (arr[ai] / max_diff * (g_height - _box_.top - _box_.bottom)) + _box_.top
+                y = (_DIFF.height - _box_.top - _box_.bottom) - (num / diff.max_diff * (_DIFF.height - _box_.top - _box_.bottom)) + _box_.top
             }
-            points.push([x,y])
+            
+            
+            points.push([x,y,isBreak])
         }
 
-
-        return {
-            diff,
-            points,
-        }
-}
-
-let calc_point = ({ ROW_CONFIG={} ,allarr=[] ,arr=[] , _DIFF = {}, deviation=0}) => {
-    let diff =  Object.assign({},maxDiff(allarr)),
-        points = [],
-        item_num = ROW_CONFIG.grid.horizontal.num || 3, //把画布的高度分为几段
-        max = diff.max,
-        min = diff.min
-
-
-        //特殊处理
-        if(max<0){ //全部为负数
-            max = 0
-        }else if(min>0){ //全部为正数字
-            min>0
-        }else{  //正负数都有
-
-        }
-
-
-
-
-
-    
     return {
         diff,
         points,
     }
 }
 
-
-
 /**
- * 和上面的方法作用相似
- * 是为了计算靠右侧的坐标以及对应的坐标点
+ * 折线图的多段线处理
+ * 当数据出现中途断线的时候开始绘制 多段折线图
+ * 该方法是配合 calc_point 方法生成的坐标点来处理的
+ * @param {*} arr 
  */
-let calc_right_point = ({ ROW_CONFIG={}, _DIFF={}, allarr=[], arr=[], total=0, deviation=0 }) => {
-    // if(_DIFF.all_points.length <= 0){
-    //     return
-    // }
-    let diff = Object.assign({},maxDiff(arr),{
-        width:_DIFF.width,
-        height:_DIFF.height
-    }),
-    _box_ = ROW_CONFIG._box_,
-    min = diff.min,
-    max = diff.max,
-    max_diff = diff.max_diff,
-    isN = diff.isN,
-    abs_max = diff.abs_max,
-    abs_min = diff.abs_min,
-    line_diff = _DIFF.all_points[0].diff, //获取第一个折线图的 diff
-    all_line = line_diff.all_line,
-    zero_top = 0,
-    zero_bottom = 0,
-    cut = sign_num((diff.abs_max + diff.abs_min) / all_line,true),
-    reset = {
-        zero_top,
-        zero_bottom,
-        cut
-    },
-    points = [];
-
-
-    if(diff.max <= 0){ //点全部在 0 轴以下
-        zero_bottom = all_line
-        max = 0
-        reset.zero_bottom = all_line
-    }else if(diff.min >= 0){ //点全部在 0 轴以上
-        zero_top = all_line
-        min = 0
-        reset.zero_top = all_line
-    }else{ 
-        /**
-         * 这里主要是通过数值来匹配坐标轴
-         * 反向匹配
-         */
-
-        let cut = sign_num((diff.abs_max + diff.abs_min) / all_line,true)
-        zero_top = Math.ceil(Math.abs(max)/cut)
-        zero_bottom = Math.ceil(Math.abs(min)/cut)
-
-
-
-        let calc_zero = function({zero_top,zero_bottom,cut}){
-            if((zero_top + zero_bottom) == all_line){
-                return {
-                    cut,
-                    zero_top,
-                    zero_bottom
-                }
-            }else{ //说明 item_H 小了  切分的段落就会多 
-                let n_cut = (zero_top + zero_bottom) * cut / all_line, //注意这里严格取值   不需要模糊算法
-                    n_zero_top = Math.ceil(Math.abs(max)/n_cut),
-                    n_zero_bottom = Math.ceil(Math.abs(min)/n_cut)
-
-                
-                return calc_zero({
-                    zero_top:n_zero_top,
-                    zero_bottom:n_zero_bottom,
-                    cut:n_cut
-                })
-            }
+let break_line = (arr) =>{
+    let callback_arr = [],
+        num = 0
+    callback_arr[num] = []
+    for(let ai in arr){
+        let isBreak = arr[ai][2]
+        if(isBreak === true){
+            num ++
+            callback_arr[num] = []
+        }else{
+            callback_arr[num].push(arr[ai])
         }
-
-        reset = calc_zero({
-            zero_top,
-            zero_bottom,
-            cut
-        }) 
     }
-
-    let zero_axis = _box_.top + line_diff.item_H * reset.zero_top
-    diff = Object.assign({},line_diff,diff,{
-        cut:reset.cut,
-        zero_axis,
-        zero_top:reset.zero_top,   //0 轴以上多少背景横线
-        zero_bottom:reset.zero_bottom, //0 轴以下多少背景横线
-        deviation, //是否存在绘制偏移
-    })
-
-
-    //重置最大值最小值和绝对值
-    max = reset.cut * reset.zero_top
-    min = reset.cut * reset.zero_bottom * -1
-    abs_max = Math.abs(max)
-    abs_min = Math.abs(min)
-
-
-
-    //循环输出点
-    for(let ri in arr){
-        let x = (diff.width - _box_.left - _box_.right - deviation) / (total-1) * (parseInt(ri)) + _box_.left + deviation/2,
-            y = 0;
-        // console.log(arr[ri])
-
-        //如果只有一条数据
-        if(total <= 1){
-            x = (diff.width - _box_.left - _box_.right - deviation) / 2 + _box_.left + deviation/2
-        }
-
-
-        if(isN === true){//如果有负数
-            if(arr[ri] > 0){
-                y = diff.zero_axis - arr[ri] / max * (diff.item_H * diff.zero_top)
-            }else if(arr[ri] == 0){
-                y = diff.zero_axis
-            }else{
-                y = diff.zero_axis + (arr[ri] / abs_min * -1 * (diff.item_H * diff.zero_bottom) )
-            }
-        }else{//都为正数 0 被包含在正数中
-            max_diff = abs_max
-            y = (diff.height - _box_.top - _box_.bottom) - (arr[ri] / max_diff * (diff.height - _box_.top - _box_.bottom)) + _box_.top
-        }
-        points.push([x,y])
-    }
-
-    return {
-        diff,
-        points
-    }
+    return callback_arr
 }
+
 
 
 /**
@@ -440,73 +335,7 @@ let adjacent = (val,part,arr)=>{
 }
 
 
-/**
- * ⚠️复杂的算法
- * 在这里是在用数组坐标去匹配绘图区域的坐标
- * 用于计算折线或柱状图的绘制区域最大值和最小值
- * 通过分段 的数量来重新计算绘制的值
- */
-let cutter = ({max,min,len,height})=>{
 
-    if(min>0){
-        min = 0
-    }
-    if(max<0){
-        max = Math.abs(min)
-        min = 0
-    }
-
-    let cut = sign_num(( max - min ) / len , true),
-        zero_top = Math.ceil(Math.abs(max) / cut),      //零轴以上多少条线
-        zero_bottom = Math.ceil(Math.abs(min) / cut),   //零轴以下多少条线
-        all_line = zero_top + zero_bottom,          //一共有多少条横背景线
-        n_max = cut * zero_top,                         //得到图表的最大值
-        n_min = cut * zero_bottom * -1,                 //得到图表的最小值
-        item_H = height / all_line
-        return {
-            item_H,
-            cut,
-            zero_top,
-            zero_bottom,
-            all_line,
-            n_max,
-            n_min
-        }      
-}
-
-
-/**
- * @简单统计
- * 
- * 已知:
- *          数组 arr 集合
- *          数字 num
- * 条件:    
- *          排出所有负数
- * 求:      
- *          num 占数组集合总和的百分比
- */
-let percentage = ({arr=[],num=0})=>{
-    // console.log(arr)
-}
-
-
-/**
- * @三角函数
- * 
- * 已知:
- *      圆心坐标 x1,y1
- *      半径    R
- *      夹角    horn
- * 条件:
- *      以Y轴正半轴开始绘制的圆形,且夹角为 horn 
- *      巨型的左上角的点为[0,0]点,是一个反向的平面直角坐标系
- * 求:  
- *      过圆上点的坐标[x,y]
- */
-let round_edge = ({x1,y1,R}) => {
-
-}
 
 
 /**
@@ -539,10 +368,7 @@ export {
     maxDiff,
     random,
     calc_point,
-    calc_right_point,
+    break_line,
     adjacent,
-    cutter,
-    percentage,
-    round_edge,
     arr_zoom
 }

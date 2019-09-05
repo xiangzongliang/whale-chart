@@ -28,41 +28,39 @@ export default {
         }
     },
     mounted(){
-        zrender.util.merge(this.ROW_CONFIG,default_config,true)
-        zrender.util.merge(this.ROW_CONFIG,line_config,true)
-        zrender.util.merge(this.ROW_CONFIG,this.opction,true)
+        this.renderChart()
+    },
+    methods:{
+        renderChart(){
+            zrender.util.merge(this.ROW_CONFIG,default_config,true)
+            zrender.util.merge(this.ROW_CONFIG,line_config,true)
+            zrender.util.merge(this.ROW_CONFIG,this.opction,true)
 
 
-        this.CHART = zrender.init(this.$refs[this.DOM_REF],{
-            renderer:           this.ROW_CONFIG.init.renderer,
-            devicePixelRatio:   this.ROW_CONFIG.init.devicePixelRatio,
-            width:              this.ROW_CONFIG.init.width,
-            height:             this.ROW_CONFIG.dpr(this.ROW_CONFIG.init.height),
-        })
-
-        // var circle = new zrender.Circle({
-        //     shape: {
-        //         cx: 150,
-        //         cy: 50,
-        //         r: 40
-        //     },
-        //     style: {
-        //         fill: 'none',
-        //         stroke: '#F00'
-        //     }
-        // });
-        // setTimeout(()=>{
-        //     this.CHART.add(circle);
-        // },300)
-        
+            this.CHART = zrender.init(this.$refs[this.DOM_REF],{
+                renderer:           this.ROW_CONFIG.init.renderer,
+                devicePixelRatio:   this.ROW_CONFIG.init.devicePixelRatio,
+                width:              this.ROW_CONFIG.init.width,
+                height:             this.ROW_CONFIG.dpr(this.ROW_CONFIG.init.height),
+            })
 
 
-        line_bar_render({
-            zrender,
-            CHART:this.CHART,
-            ROW_CONFIG:this.ROW_CONFIG,
-            REFS:this.$refs[this.DOM_REF]
-        })
+            line_bar_render({
+                zrender,
+                CHART:this.CHART,
+                ROW_CONFIG:this.ROW_CONFIG,
+                REFS:this.$refs[this.DOM_REF]
+            })
+        },
+        upChart(){
+           this.CHART.dispose() 
+           this.renderChart()
+        }
+    },
+    watch:{
+        'opction.chartData':function(val, oldVal){
+            this.upChart()
+        }
     }
 }
 </script>

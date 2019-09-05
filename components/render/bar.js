@@ -8,7 +8,6 @@ let render_bar = ({ zrender, ROW_CONFIG, _DIFF }) =>{
         before_seat = 0, //上一个柱形图的位移坐标 //这两个声明变量的执行是有顺序的,不可随意调动
         current_seat = 0 //当前需要的位移坐标
 
-        
     for(let pi in all_points){
         if(all_points[pi].type == 'bar'){
             let bar = all_points[pi].bar,

@@ -7,7 +7,7 @@ let line_config = {
         right:20
     },
     //颜色数组
-    colors:['#588EEB','#CCA663','#9800FF','#DF6666','#6AA84F'],
+    colors:['#CCA663','#DF6666','#6AA84F','#588EEB','#9800FF',],
     columns:[], //需要显示的轴
     chartData:[],//数据集合
     //维度 例如 bottom 是指 底部的 X 轴 对应的 key
@@ -57,13 +57,13 @@ let line_config = {
         },
         // [ line | bar ]
         left:{
-            paddingLeft:35,
-            lineStyle:{
-                show:false,
-                lineWidth:1,
-                stroke:"#ccc",
-                lineDash:[0],
-            },
+            paddingLeft:45,
+            // lineStyle:{
+            //     show:false,
+            //     lineWidth:1,
+            //     stroke:"#ccc",
+            //     lineDash:[0],
+            // },
             textStyle:{
                 fontWeight:400,
                 fontSize:12,
@@ -78,12 +78,12 @@ let line_config = {
         // [ line | bar ] //适合双轴
         right:{
             paddingRight:10,
-            lineStyle:{
-                show:false,
-                lineWidth:1,
-                stroke:"#ccc",
-                lineDash:[0],
-            },
+            // lineStyle:{
+            //     show:false,
+            //     lineWidth:1,
+            //     stroke:"#ccc",
+            //     lineDash:[0],
+            // },
             textStyle:{
                 fontWeight:400,
                 fontSize:12,
@@ -187,7 +187,7 @@ let line_config = {
         show:true,
         horizontal:{
             show:true,  //是否显示
-            num:5,      //线条数量
+            num:4,      //线条数量
             lineStyle:{
                 lineWidth:0.5,
                 stroke:"#CCCCCC",
