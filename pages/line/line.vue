@@ -5,7 +5,6 @@
 </template>
 <script>
 import blendChart from '@/components/line.vue'
-import { setTimeout } from 'timers';
 export default {
     data(){
         return {

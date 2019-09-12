@@ -7,7 +7,6 @@ import { random } from './algorithms'
 import { default_config } from './config/default.config'
 import { line_config } from './config/line.config'
 import { line_bar_render } from './render/line.render'
-import { setTimeout } from 'timers';
 
 //渲染
 
