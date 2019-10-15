@@ -5,8 +5,9 @@ module.exports = (Mock) => {
     })
     Mock.mock('/api/chart','post', (req, res) => {
         return Mock.mock({
-            "data|5-12":[{
+            "data|5":[{
                 'name': '@cword(2)',
+                // 'name': '@string(3)',
                 "key|-10-10": 2,
                 "val|-5-5.2-2":0,
                 "pre|-100-100":0,

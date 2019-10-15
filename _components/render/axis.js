@@ -109,27 +109,44 @@ let axis_left = ({zrender, ROW_CONFIG, _DIFF}) => {
         let diff = left_axis_points[0].diff,
             all_line = diff.all_line,
             zero_top = diff.zero_top,
-            cut = diff.cut
+            cut = diff.cut,
+            text_are = [], //左侧需要显示的文字集合
+            text_length = 0,    //用于记录左侧文字的最大长度,自动控制表格绘制
+            left_axis_fontSize = dpr(ROW_CONFIG.axis.left.textStyle.fontSize)
         for(let li=0; li <= all_line; li++){
-            let y_coor = diff.item_H * li + _box_.top,
-                text = cut * (zero_top - li)
+            let text = cut * (zero_top - li)
+            text = ROW_CONFIG.axis.left.formatter(text)
+            if(text.length > text_length){
+                text_length = text.length
+            }
+            text_are.push(text)
+        }
 
+        _DIFF._cache.leftTextMaxWidth = dpr(text_length * dpr(ROW_CONFIG.axis.left.textStyle.fontSize/3.5))
+
+        console.log(_DIFF._cache.leftTextMaxWidth)
+
+
+        for(let li=0; li <= all_line; li++){
+            let y_coor = diff.item_H * li + _box_.top
             let left_zero_text = new zrender.Rect({
                     shape:{
-                        x:  dpr(ROW_CONFIG.axis.left.paddingLeft),
+                        x: _DIFF._cache.leftTextMaxWidth,
                         y:  y_coor,
                         width:0,
                         height:0,
                     },
                     style: Object.assign({},ROW_CONFIG.axis.left.textStyle,{
-                        text:       ROW_CONFIG.axis.left.formatter(text),
-                        fontSize:   dpr(ROW_CONFIG.axis.left.textStyle.fontSize)
+                        text:       text_are[li],
+                        fontSize: left_axis_fontSize  
                     }),
                     zlevel:0
                 })
 
             left_axis_grid.add(left_zero_text)
         }
+
+        
 
     }
     return left_axis_grid

@@ -1,3 +1,6 @@
+/**
+ * 默认配置文件
+ */
 let default_config = {
     //这是一个计算公式 将所有配置的值经过计算 得出 px 的单位 
     dpr:(val)=>{
@@ -13,6 +16,7 @@ let default_config = {
             }
         } 
     },
+
     //初始化配置
     init:{
         renderer:'canvas',
@@ -36,6 +40,7 @@ let default_config = {
     //该值是在绘图之后挂载在对象上的,禁止被修改
     _diff:{}
 }
-export {
+
+export { 
     default_config
 }

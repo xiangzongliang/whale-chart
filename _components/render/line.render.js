@@ -62,7 +62,8 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
             height: CHART.getHeight(),
             all_points: [],      //所有点的集合   包括折线图和柱状图
             left_axis_points: [],   //基于左侧轴的所有点的集合
-            right_axis_points:[]    //基于右侧点的所有点的集合
+            right_axis_points:[],    //基于右侧点的所有点的集合
+            _cache:{} // 基于一些计算之后的缓存数据 
         },
 
 
@@ -186,12 +187,12 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
     }
 
 
-    let RD_bg = render_grid({
+    let RD_axis_left = axis_left({
         zrender,
         ROW_CONFIG,
         _DIFF
     }),
-    RD_axis_left = axis_left({
+    RD_bg = render_grid({
         zrender,
         ROW_CONFIG,
         _DIFF
@@ -229,8 +230,9 @@ let line_bar_render = ({ zrender, CHART={} ,ROW_CONFIG={}, REFS }) =>{
 
 
 
-    CHART.add(RD_bg)
+    
     CHART.add(RD_axis_left)
+    CHART.add(RD_bg)
     CHART.add(RD_axis_right)
     CHART.add(RD_axis_btm) 
     CHART.add(RD_line)

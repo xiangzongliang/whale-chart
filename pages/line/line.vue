@@ -1,6 +1,7 @@
 <template>
     <div>
         <blend-chart class="line" :opction="chartOpction"/>
+        <div class="content">neirong</div>
     </div>
 </template>
 <script>
@@ -9,6 +10,10 @@ export default {
     data(){
         return {
             chartOpction:{
+                box:{
+                    // right:50,
+                    // left:10
+                },
                 dimension:{
                     bottom:{
                         key:'name',
@@ -16,6 +21,12 @@ export default {
                 },
                 columns:[{
                     key:'key',
+                    // type:'bar'
+                },{
+                    key:'val',
+                    type:'bar'
+                },{
+                    key:'age'
                 }],
                 //数据集合
                 chartData:[],
@@ -37,20 +48,27 @@ export default {
                 }
                  */
                 
-                // axis:{
-                //     bottom:{
-                //         interval:{ //间隔
-                //             type:'between',  // 'all'    'between'
-                //         },
-                //     },
-                //     left:{
-                //         paddingLeft:35,
-                //         textStyle:{},
-                //         formatter:(val)=>{
-                //             return [val.toFixed(1),'{_name|2019}'].join('\n') 
-                //         },
-                //     }
-                // },
+                axis:{
+                    bottom:{
+                        interval:{ //间隔
+                            type:'all',  // 'all'    'between'
+                        },
+                    },
+                    left:{
+                        paddingLeft:55,
+                        textStyle:{},
+                        formatter:(val)=>{
+                            // return [val.toFixed(1),'{_name|2019}'].join('\n') 
+                            return val.toFixed(2) +'亿'
+                        },
+                    },
+                    right:{
+                        formatter:(val)=>{
+                            // return [val.toFixed(1),'{_name|2019}'].join('\n') 
+                            return val.toFixed(2)
+                        },
+                    }
+                },
                 // colors:['#CCA663','#CCA663','#CCA663'],
                 // box:{
                 //     right:40
@@ -117,6 +135,11 @@ export default {
 .line{
     // padding: 20px;
     box-sizing: border-box;
+    // touch-action: none;
+}
+.content{
+    height: 2000px;
+    background: #ff8800
 }
 </style>
 

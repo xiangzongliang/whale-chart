@@ -1,4 +1,4 @@
-import { sign_num,adjacent } from '../components/util/algorithms'
+import { sign_num,adjacent } from '../_components/util/algorithms'
 
 /**
  * 测试 sign_num

@@ -31,7 +31,7 @@ let render_grid = ({ zrender ,ROW_CONFIG={}, _DIFF = {} }) => {
             let y_coor = diff.item_H * bi + _box_.top
             let zero_line = new zrender.Line({
                 shape:{
-                    x1 : _box_.left,
+                    x1 : _box_.left + _DIFF._cache.leftTextMaxWidth,
                     y1 : y_coor,
                     x2 : _DIFF.width - _box_.right,
                     y2 : y_coor,

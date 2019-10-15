@@ -93,7 +93,8 @@ let vertical_pointer = ({ zrender, ROW_CONFIG, _DIFF, CHART, REFS, get_color }) 
         event = ROW_CONFIG.event,
         all_points = _DIFF.all_points,
         chartData = ROW_CONFIG.chartData,
-        before_x //竖线移动的 X 位置
+        before_x, //竖线移动的 X 位置
+        touch_Y    //用来记录点击之后(滑动上下距离大小)是否阻止默认事件
         
 
         // console.log(all_points)
@@ -284,13 +285,32 @@ let vertical_pointer = ({ zrender, ROW_CONFIG, _DIFF, CHART, REFS, get_color }) 
             get_color,
             index:-1
         })
+        ROW_CONFIG.event.touchend()
     }
 
-
-
-    if(isMouse() === true){ //优先使用鼠标事件
+    if(isMouse() == true){ //优先使用touch事件
+        REFS.addEventListener('touchstart',(e)=>{
+            touch_Y = e.zrY
+            ROW_CONFIG.event.touchstart()
+        })
+        REFS.addEventListener('touchmove',(e)=>{
+            // e.stopPropagation()
+            move_point({
+                X:e.zrX,
+                Y:e.zrY,
+            })
+            // if(Math.abs(e.zrY - touch_Y) < _DIFF.height*0.3){
+            //     e.preventDefault(); //手机上阻止默认事件会防止滚动条也开始滚动
+                e.stopPropagation()
+            // }
+           
+        },{ passive: false })
+        REFS.addEventListener('touchend',end_point)
+    }else{
         //PC 端
         CHART.on('mousemove', (e)=>{
+            // e.preventDefault()
+            // e.stopPropagation()
             move_point({
                 X:e.offsetX,
                 Y:e.offsetY,
@@ -298,17 +318,6 @@ let vertical_pointer = ({ zrender, ROW_CONFIG, _DIFF, CHART, REFS, get_color }) 
         }) 
         //PC 端松开之后移除提示
         CHART.on('mouseup', end_point)
-    }else{
-        REFS.addEventListener('touchmove',(e)=>{
-            e.preventDefault();
-            e.stopPropagation()
-            move_point({
-                X:e.zrX,
-                Y:e.zrY,
-            })
-        })
-        REFS.addEventListener('touchend',end_point)
-        
     }
 
 
