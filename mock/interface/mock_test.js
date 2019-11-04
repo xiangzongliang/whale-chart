@@ -8,7 +8,7 @@ module.exports = (Mock) => {
             "data|5":[{
                 'name': '@cword(2)',
                 // 'name': '@string(3)',
-                "key|-10-10": 2,
+                "key|-100-100": 2,
                 "val|-5-5.2-2":0,
                 "pre|-100-100":0,
                 "age|20-40":20,

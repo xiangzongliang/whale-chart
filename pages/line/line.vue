@@ -21,13 +21,22 @@ export default {
                 },
                 columns:[{
                     key:'key',
-                    // type:'bar'
+                    // type:'bar',
+                    axis:'right',
+                    line:{
+                        smooth:'0'
+                    },
+                    bar:{
+                        width:20
+                    }
                 },{
-                    key:'val',
+                    key:'age',
                     type:'bar'
                 },{
-                    key:'age'
-                }],
+                    key:'val',
+                    // type:'bar'
+                }
+                ],
                 //数据集合
                 chartData:[],
                 /**
@@ -49,25 +58,25 @@ export default {
                  */
                 
                 axis:{
-                    bottom:{
-                        interval:{ //间隔
-                            type:'all',  // 'all'    'between'
-                        },
-                    },
-                    left:{
-                        paddingLeft:55,
-                        textStyle:{},
-                        formatter:(val)=>{
-                            // return [val.toFixed(1),'{_name|2019}'].join('\n') 
-                            return val.toFixed(2) +'亿'
-                        },
-                    },
-                    right:{
-                        formatter:(val)=>{
-                            // return [val.toFixed(1),'{_name|2019}'].join('\n') 
-                            return val.toFixed(2)
-                        },
-                    }
+                //     bottom:{
+                //         interval:{ //间隔
+                //             type:'all',  // 'all'    'between'
+                //         },
+                //     },
+                    // left:{
+                    //     paddingLeft:55,
+                    //     textStyle:{},
+                    //     formatter:(val)=>{
+                    //         // return [val.toFixed(1),'{_name|2019}'].join('\n') 
+                    //         return (val/1000000).toFixed(2) +'亿'
+                    //     },
+                    // },
+                //     right:{
+                //         formatter:(val)=>{
+                //             // return [val.toFixed(1),'{_name|2019}'].join('\n') 
+                //             return val.toFixed(2)
+                //         },
+                //     }
                 },
                 // colors:['#CCA663','#CCA663','#CCA663'],
                 // box:{
@@ -118,12 +127,33 @@ export default {
         }
     },
     mounted(){
+        this.chartOpction.chartData = [{
+            key:28,
+            age:27,
+            val:30
+        },{
+            key:11,
+            age:23,
+            val:26
+        },{
+            key:null,
+            age:20,
+            val:20
+        },{
+            key:9,
+            age:18,
+            val:16
+        },{
+            key:10,
+            age:26,
+            val:30
+        },]
         this.$axios({
             method:'post',
             url:'/api/chart',
             data:{},
         }).then(res=>{
-            this.chartOpction.chartData = res.data.data
+            // this.chartOpction.chartData = res.data.data
         })
     },  
     components:{

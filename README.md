@@ -15,5 +15,3 @@ line _text = 500
 pointer = {
     zlevel:800
 }
-
-

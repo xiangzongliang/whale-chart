@@ -1,7 +1,7 @@
 let default_config = {
     //这是一个计算公式 将所有配置的值经过计算 得出 px 的单位 
     dpr:(val)=>{
-        let dpr = window.dpr || 1
+        let dpr = window.dpr || 2
         if(typeof val === 'number'){
             return val*dpr
         }else{

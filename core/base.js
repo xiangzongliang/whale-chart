@@ -28,7 +28,7 @@ module.exports = {
         alias: {
             '@':path.resolve(__dirname, '../'),
         },
-        extensions:['.js','.vue','.json','.ts','.tsx'],
+        extensions:['.js','.vue','.ts','.json','.tsx'],
         symlinks: false,
     },
 
