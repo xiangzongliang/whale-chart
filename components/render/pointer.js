@@ -2,6 +2,11 @@ import { arr_zoom } from '../algorithms/arr_zoom'
 import { adjacent } from '../algorithms/adjacent'
 import { isMouse } from './event'
 
+
+/**
+ * 渲染转折点
+ * @param {*} param0 
+ */
 const RD_spot = ({ zrender, SL, _DIFF, ROW_CONFIG, get_color,index }) => { 
     SL.removeAll()
     let dpr = ROW_CONFIG.dpr,
@@ -76,13 +81,20 @@ const RD_spot = ({ zrender, SL, _DIFF, ROW_CONFIG, get_color,index }) => {
         }
 }
 
+
+/**
+ * 渲染指示器
+ * @param {*} param0 
+ */
 const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
     let RENDER_pointer = new zrender.Group(),  //承载所有指示器的组合
         spot_line = new zrender.Group(),        //承载转折点、指示器的线、提示框的组合   不包含柱状图的提示标示文字
         dpr = ROW_CONFIG.dpr,
+        event = ROW_CONFIG.event,
         _box_ = ROW_CONFIG._box_,
         chartData = ROW_CONFIG.chartData,
-        all_points = _DIFF.all_points || [],
+        columns = ROW_CONFIG.columns,
+        
         tip = ROW_CONFIG.pointer.tip,   //提示配置
         vertical = ROW_CONFIG.pointer.vertical, //指示器竖线配置
         before_x //竖线移动的 X 位置
@@ -125,7 +137,33 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
         }),
         zlevel:800,
     });
+
+    /**
+     * 渲染提示框
+     */
+    let rich = tip.style.rich
+    if(zrender.util.isFunction(rich)){
+        rich = rich({ dpr ,arr_zoom })
+    }
+    let tips_box =  new zrender.Text({
+        position:[_box_.left,_box_.top],
+        style:Object.assign({},tip.style,{
+            textBorderWidth:dpr(tip.style.textBorderWidth),
+            textBoxShadowBlur:dpr(tip.style.textBoxShadowBlur),
+            textBorderRadius:dpr(tip.style.textBorderRadius),
+            textPadding:arr_zoom({
+                arr:tip.style.textPadding,
+                dpr
+            }),
+            rich:rich,
+        }),
+        zlevel:800,
+    })
+
+    vertical_line.dirty()
     vertical_line.hide()
+    tips_box.dirty()
+    tips_box.hide()
 
 
     //更新指示器竖线的位置
@@ -138,6 +176,57 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
         },260,0,'quarticOut',()=>{
             //动画结束
         })
+    }
+
+    //移动的时候更新提示框
+    let up_tips = (before_x,pp_obj) => {
+        let opt_data = chartData[pp_obj.index],
+            text_arr = [],
+            fmt_arr = []
+        
+        for(let ci in columns){
+            text_arr.push(`{_key|${columns[ci].key} }{_val|${opt_data[columns[ci].key]}}`)
+            fmt_arr.push([`${columns[ci].key}`,`${opt_data[columns[ci].key]}`])
+        }
+
+
+        let GET_text_arr = tip.formatter ? tip.formatter(fmt_arr) : null
+
+        if(!GET_text_arr){
+            GET_text_arr = text_arr
+        }
+
+        
+        
+        tips_box.attr({
+            style:{
+                text:GET_text_arr.join('\n'),
+                textAlign:'left',
+            }
+        });
+
+        //去计算位置
+        let tips_BD = tips_box.getBoundingRect(),
+            position_X,
+            position_Y = _box_.top
+
+
+        //让提示框不要跑出折线范围以外
+        if(before_x > _DIFF.width / 2){
+            position_X = before_x - tips_BD.width - 10
+        }else{
+            position_X = before_x + 10
+        }
+        // if(e.offsetY > (_DIFF.height - _box_.bottom - tips_BD.height)){
+        //     position_Y = _DIFF.height - _box_.bottom - tips_BD.height - 10
+        // }else if(e.offsetY < _box_.top){
+        //     position_Y = _box_.top + 10
+        // }
+
+        tips_box.animateTo({
+            position:[position_X,position_Y],
+        },260,0,()=>{},true)
+        
     }
 
 
@@ -155,7 +244,6 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
             pp_obj = adjacent(X - _box_.left, sub_len, _DIFF.all_points[0].points)// 当前鼠标相对画布的 X 坐标 , 横轴分段的每一段长度 , 点集合
         //何时去触发重新绘制
         if(pp_obj.position && before_x != pp_obj.position[0]){
-            console.log('gengxin',pp_obj)
             RD_spot({
                 zrender,
                 _DIFF,
@@ -166,13 +254,13 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
             })
             before_x = pp_obj.position[0]
             up_line(before_x)
-            // up_tips(before_x,e,pp_obj)
+            up_tips(before_x,pp_obj)
 
 
-            // //回调用户
-            // if(event.pointer && event.pointer.update && zrender.util.isFunction(event.pointer.update)){
-            //     event.pointer.update(chartData[pp_obj.index])
-            // }
+            //回调用户
+            if(event.pointer && event.pointer.update && zrender.util.isFunction(event.pointer.update)){
+                event.pointer.update(chartData[pp_obj.index])
+            }
         }
         
 
@@ -181,13 +269,14 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
         if(vertical.show === true){
             vertical_line.show()
         }
-        // if(pointer.tip.show === true){
-        //     render_tip.show()
-        // }
+        if(tip.show === true){
+            tips_box.show()
+        }
     }
 
     let end_point = () =>{
         vertical_line.hide()
+        tips_box.hide()
         RD_spot({
             zrender,
             _DIFF,
@@ -196,14 +285,15 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
             SL:spot_line,
             index:-1
         })
+        ROW_CONFIG.event.touchend()
     }
 
 
     if(isMouse() == true){ //优先使用touch事件
-        // REFS.addEventListener('touchstart',(e)=>{
-        //     touch_Y = e.zrY
-        //     ROW_CONFIG.event.touchstart()
-        // })
+        REFS.addEventListener('touchstart',(e)=>{
+            // touch_Y = e.zrY
+            ROW_CONFIG.event.touchstart()
+        })
         REFS.addEventListener('touchmove',(e)=>{
             // e.stopPropagation()
             move_point({
@@ -237,6 +327,7 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS }) => {
 
 
     RENDER_pointer.add(vertical_line)
+    RENDER_pointer.add(tips_box)
     RENDER_pointer.add(spot_line)
 
     

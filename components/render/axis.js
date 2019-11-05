@@ -1,3 +1,7 @@
+/**
+ * 渲染左侧的轴
+ * @param {*} param0 
+ */
 let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
     let RENDER_left_axis = new zrender.Group(),
         dpr = ROW_CONFIG.dpr,
@@ -50,7 +54,7 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
 
     //0轴以下
     for(let bi = 0; bi < _CORE.zero_bottom; bi++){
-        let text = _CORE.item_val * (_CORE.zero_bottom - bi) * -1,
+        let text = _CORE.item_val * (bi+1) * -1,
             y = (bi + _CORE.zero_top + 1)* _CORE.item_height + _box_.top
             text = formatter(text) || text
             render_text({
@@ -71,7 +75,10 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
 
 
 
-
+/**
+ * 渲染右侧的轴
+ * @param {*} param0 
+ */
 
 let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
     let RENDER_right_axis = new zrender.Group(),
@@ -144,19 +151,33 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
 
 
 
+/**
+ * 渲染底部的轴
+ * @param {*} param0 
+ */
+
+let RD_bottom_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
+    let RENDER_bottom_axis = new zrender.Group(),
+        axis_bottom = ROW_CONFIG.axis.bottom,
+        _box_ = ROW_CONFIG._box_,
+        dpr = ROW_CONFIG.dpr,
+        chartData = ROW_CONFIG.chartData,
+        render_key = ROW_CONFIG.dimension.bottom.key,
+        type =  axis_bottom.interval.type,
+        points = _DIFF.all_points[0].points //拿到第一组点集合  通过 X 坐标渲染全部 X 轴文字
 
 
-let RD_bottom_axis = () => {
+        for(let bi in points){
 
+        }
+
+
+    return RENDER_bottom_axis
 }
 
-let RD_top_axis = () => {
-
-}
 
 export {
     RD_left_axis,
     RD_right_axis,
-    RD_bottom_axis,
-    RD_top_axis
+    RD_bottom_axis
 }

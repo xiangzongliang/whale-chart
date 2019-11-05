@@ -2,7 +2,6 @@ const point_line_bar = ({all, arr, _CORE, ROW_CONFIG, _DIFF, X_left=0, X_right=0
     let N_max = _CORE.zero_top * _CORE.item_val,
         N_min = _CORE.zero_bottom * _CORE.item_val * -1,
         _box_ = ROW_CONFIG._box_,
-        dpr = ROW_CONFIG.dpr,
         zero_axis = _CORE.zero_axis,
         diff = _CORE.diff,
         isN = diff.isN,
@@ -28,7 +27,9 @@ const point_line_bar = ({all, arr, _CORE, ROW_CONFIG, _DIFF, X_left=0, X_right=0
                 }else if(val == 0){
                     y = zero_axis
                 }else{
-                    y = zero_axis + (val / N_min * (_CORE.zero_bottom * _CORE.item_height) * -1 )
+                    
+                    y = zero_axis - (val / N_min * (_CORE.zero_bottom * _CORE.item_height) * -1 )
+                    console.log(val,y)
                 }
             }else{
                 y = (_DIFF.height - _box_.top - _box_.bottom) - (val / diff.max_diff * (_DIFF.height - _box_.top - _box_.bottom)) + _box_.top

@@ -7,7 +7,7 @@ let line_config = {
         right:20
     },
     //颜色数组
-    colors:['#CCA663','#DF6666','#6AA84F','#588EEB','#9800FF'],
+    colors:['#CCA663','#DF6666','#588EEB','#6AA84F','#9800FF'],
     //轴线
     axis:{
         // [ line | bar ]
@@ -164,6 +164,22 @@ let line_config = {
             }
         }
     },
+    event:{
+        pointer:{
+            //指示器更新之后回调
+            update:(opction)=>{}
+        },
+        //图表被按下
+        touchstart(){},
+        //图表松开
+        touchend(){},
+        //图表渲染之前
+        start(){},
+        //图表渲染结束
+        end(){},
+        //图表被更新
+        update(){} 
+    }
 
 }
 export {

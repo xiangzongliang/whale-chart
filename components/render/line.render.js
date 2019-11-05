@@ -6,7 +6,7 @@ import { axis_grid } from '../algorithms/axis_grid'
 
 
 //RENDER 
-import { RD_left_axis, RD_right_axis } from '../render/axis'
+import { RD_left_axis, RD_right_axis, RD_bottom_axis } from '../render/axis'
 import { RD_grid } from '../render/grid'
 import { RD_line_bar } from './line_bar.render'
 import { RD_pointer } from './pointer'
@@ -72,7 +72,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             arr:ROW_CONFIG.box,
             dpr:ROW_CONFIG.dpr
         }),
-        bar_total_width = 0,    //用于记录带有柱状图的混合图中,单列柱状图占用的总宽度
+        bar_total_width = 30,    //用于记录带有柱状图的混合图中,单列柱状图占用的总宽度
         bar_total_interval = 0  //同上//---记录总间隔宽度
         // _RENDER = {} //输出到渲染层的对象  废弃
 
@@ -86,7 +86,8 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
         
 
 
-        let last_interval = 0 //用于记录最后一个间隙值  
+        let last_interval = 0, //用于记录最后一个间隙值 
+            forward = 0         //需要基于第一个绘制的柱状图偏移的中心距离  //这是个很重要的值
 
         // 统计出左、右两侧的点集合,整体数据统计
         for(let ci in columns){
@@ -106,7 +107,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
                 //注意⚠️最后一列柱状图的间隔不用处理
                 last_interval = bar.interval //重新负值 定义为最后一个间隙值
 
-                
+                forward = forward == 0 ? bar.width / 2 : forward
             }
             
 
@@ -127,8 +128,6 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             }
         }
 
-
-        console.log(last_interval)
 
 
         bar_total_interval = bar_total_interval - last_interval
@@ -273,7 +272,8 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             zrender,
             ROW_CONFIG,
             total_width :   bar_total_width,
-            total_interval :bar_total_interval
+            total_interval :bar_total_interval,
+            forward
         })
 
 
@@ -288,9 +288,18 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
         })
 
 
+        //渲染折线图的底部轴
+        let RENDER_bottom_axis = RD_bottom_axis({
+            zrender,
+            _DIFF,
+            ROW_CONFIG,
+        })
+
+
 
         CHART.add(RENDER_left_axis)     //渲染左侧轴
         CHART.add(RENDER_right_axis)    //渲染右侧轴
+        CHART.add(RENDER_bottom_axis)    //渲染右侧轴
         CHART.add(RENDER_grid)          //渲染背景网格
         CHART.add(RENDER_line_bar)      //渲染折线图 和 柱状图  集合
         CHART.add(RENDER_pointer)       //渲染折线图的点集合、指示器、部分响应事件

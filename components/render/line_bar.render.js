@@ -11,19 +11,19 @@ let RD_chart_text = () =>{
  * @param {*} param0 
  * 
  */
-let RD_line_bar = ({ zrender, ROW_CONFIG, _DIFF, total_width, total_interval  }) => {
+let RD_line_bar = ({ zrender, ROW_CONFIG, _DIFF, total_width, total_interval, forward  }) => {
     let RENDER_line = new zrender.Group(),
         dpr = ROW_CONFIG.dpr,
         all_points = _DIFF.all_points || [],
-        befor_deviation = 0
+
+        //这事两个特殊值
+        before_seat = 0 //上一个柱形图的位移坐标 //这两个声明变量的执行是有顺序的,不可随意调动
+        
 
         for(let li in all_points){
-
-
             /**
              * 绘制折线图
              */
-
 
             if(all_points[li].type == 'line'){
                 let line_opction = all_points[li].line,
@@ -45,7 +45,7 @@ let RD_line_bar = ({ zrender, ROW_CONFIG, _DIFF, total_width, total_interval  })
                 
             }else{
 
-
+                
             /**
              * 绘制柱状图
              */
@@ -53,31 +53,24 @@ let RD_line_bar = ({ zrender, ROW_CONFIG, _DIFF, total_width, total_interval  })
                     points = all_points[li].points,
                     deviation = (total_width + total_interval) / 2
 
-                    console.log(bar_opction,total_width)
-                    befor_deviation += bar_opction.width + bar_opction.interval
-
                 for(let bir in points){
                     if(points[bir][2] === false){ //数据正常才渲染
-                        let bar_info = points[bir][3]
-
-
-                        
-
-                        let chart_bar = new zrender.Rect({
-                            shape:{
-                                r:0,
-                                x:  points[bir][0] + (deviation - befor_deviation),
-                                y:  points[bir][1],
-                                width:  bar_opction.width,
-                                height: bar_info._CORE.zero_axis - points[bir][1]// + 
-                            },
-                            style: bar_opction.style,
-                            zlevel:100
-                        })
+                        let bar_info = points[bir][3],
+                            chart_bar = new zrender.Rect({
+                                shape:{
+                                    r:0,
+                                    x:  points[bir][0] - deviation + before_seat,
+                                    y:  points[bir][1],
+                                    width:  bar_opction.width,
+                                    height: bar_info._CORE.zero_axis - points[bir][1]// + 
+                                },
+                                style: bar_opction.style,
+                                zlevel:100
+                            })
                         RENDER_line.add(chart_bar)
                     }
                 }
-
+                before_seat = before_seat + bar_opction.width + bar_opction.interval
             }
         }
 

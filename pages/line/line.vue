@@ -24,14 +24,14 @@ export default {
                     // type:'bar',
                     axis:'right',
                     line:{
-                        smooth:'0'
+                        // smooth:'0'
                     },
-                    bar:{
-                        width:20
-                    }
+                    // bar:{
+                    //     width:20
+                    // }
                 },{
                     key:'age',
-                    type:'bar'
+                    // type:'bar'
                 },{
                     key:'val',
                     // type:'bar'
@@ -127,33 +127,34 @@ export default {
         }
     },
     mounted(){
-        this.chartOpction.chartData = [{
-            key:28,
-            age:27,
-            val:30
-        },{
-            key:11,
-            age:23,
-            val:26
-        },{
-            key:null,
-            age:20,
-            val:20
-        },{
-            key:9,
-            age:18,
-            val:16
-        },{
-            key:10,
-            age:26,
-            val:30
-        },]
+        // this.chartOpction.chartData = [{
+        //     key:28,
+        //     age:27,
+        //     val:30
+        // },{
+        //     key:-28,
+        //     age:23,
+        //     val:26
+        // },{
+        //     key:-50,
+        //     age:20,
+        //     val:20
+        // },{
+        //     key:9,
+        //     age:18,
+        //     val:16
+        // },{
+        //     key:1,
+        //     age:26,
+        //     val:30
+        // },]
         this.$axios({
             method:'post',
             url:'/api/chart',
             data:{},
         }).then(res=>{
-            // this.chartOpction.chartData = res.data.data
+            console.log(res.data.data)
+            this.chartOpction.chartData = res.data.data
         })
     },  
     components:{
