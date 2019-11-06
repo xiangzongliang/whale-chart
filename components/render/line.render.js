@@ -293,6 +293,8 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             zrender,
             _DIFF,
             ROW_CONFIG,
+            X_left,
+            X_right,
         })
 
 

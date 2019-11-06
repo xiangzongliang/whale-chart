@@ -15,17 +15,23 @@ let line_config = {
             interval:{ //间隔
                 type:'all',  // 'all'    'between'
             },
-            lineStyle:{
-                lineWidth:0.5,
-                stroke:"#ccc",
-                lineDash:[0],
+            line:{
+                show:true,
+                style:{
+                    lineWidth:0.5,
+                    stroke:"#ccc",
+                    lineDash:[0],
+                }
             },
-            textStyle:{
-                fontWeight:400,
-                fontSize:12,
-                textFill:"#666666",
-                // textAlign: "right", //无效
-                textVerticalAlign:"bottom",
+            text:{
+                show:true,
+                style:{
+                    fontWeight:400,
+                    fontSize:12,
+                    textFill:"#666666",
+                    // textAlign: "right", //无效
+                    textVerticalAlign:"bottom", 
+                }
             },
             formatter(text,data){
                 return text
@@ -34,6 +40,16 @@ let line_config = {
         // [ line | bar ]
         left:{
             paddingLeft:0,
+            text:{
+                show:true,
+                style:{
+                    fontWeight:400,
+                    fontSize:12,
+                    textFill:"#666666",
+                    textAlign: "right",
+                    textVerticalAlign:"middle"
+                }
+            },
             textStyle:{
                 fontWeight:400,
                 fontSize:12,

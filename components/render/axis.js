@@ -1,3 +1,4 @@
+import { arr_zoom } from '../algorithms/arr_zoom'
 /**
  * 渲染左侧的轴
  * @param {*} param0 
@@ -156,7 +157,7 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
  * @param {*} param0 
  */
 
-let RD_bottom_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
+let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
     let RENDER_bottom_axis = new zrender.Group(),
         axis_bottom = ROW_CONFIG.axis.bottom,
         _box_ = ROW_CONFIG._box_,
@@ -164,12 +165,66 @@ let RD_bottom_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
         chartData = ROW_CONFIG.chartData,
         render_key = ROW_CONFIG.dimension.bottom.key,
         type =  axis_bottom.interval.type,
+        formatter = axis_bottom.formatter,
         points = _DIFF.all_points[0].points //拿到第一组点集合  通过 X 坐标渲染全部 X 轴文字
 
 
-        for(let bi in points){
 
+        /**
+         * 渲染底部的线
+         */
+        if(axis_bottom.line.show === true){
+            let bottom_line = new zrender.Line({
+                shape:{
+                    x1 : X_left,
+                    x2 : _DIFF.width - (X_right ? X_right : _box_.right),
+                    y1 : _DIFF.height - _box_.bottom,
+                    y2 : _DIFF.height - _box_.bottom
+                },
+                style:Object.assign({},axis_bottom.line.style,{
+                    lineWidth:dpr(axis_bottom.line.style.lineWidth),
+                    lineDash:arr_zoom({arr:axis_bottom.line.style.lineDash,dpr})
+                })
+            })
+
+            RENDER_bottom_axis.add(bottom_line)
         }
+
+
+
+        /**
+         * 渲染底部的文字
+         */
+        if(axis_bottom.text.show === true){
+            for(let bi in points){
+                let _text = chartData[bi][render_key]
+                //执行用户自定义
+                if(formatter && zrender.util.isFunction(formatter)){
+                    let n_text = formatter(_text,chartData[bi])
+                    if(n_text){
+                        _text = n_text
+                    }
+                }
+    
+    
+    
+                //渲染底部文字
+                let render_bottom_text = new zrender.Rect({
+                    shape:{
+                        r : 0,
+                        x : points[bi][0],
+                        y : _DIFF.height
+                    },
+                    style:Object.assign({},axis_bottom.text.style,{
+                        text : _text,
+                        fontSize : dpr(axis_bottom.text.style.fontSize),
+                        fontWeight : dpr(axis_bottom.text.style.fontWeight)
+                    }) 
+                })
+                RENDER_bottom_axis.add(render_bottom_text)
+            }
+        }
+        
 
 
     return RENDER_bottom_axis
