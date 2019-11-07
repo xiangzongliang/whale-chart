@@ -24,17 +24,20 @@ export default {
                     // type:'bar',
                     axis:'right',
                     line:{
-                        // smooth:'0'
+                        smooth:'0.3'
                     },
                     // bar:{
                     //     width:20
                     // }
                 },{
                     key:'age',
-                    // type:'bar'
+                    type:'bar'
                 },{
                     key:'val',
-                    // type:'bar'
+                    // type:'bar',
+                    line:{
+                        smooth:'0.3'
+                    },
                 }
                 ],
                 //数据集合

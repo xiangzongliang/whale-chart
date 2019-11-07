@@ -72,7 +72,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             arr:ROW_CONFIG.box,
             dpr:ROW_CONFIG.dpr
         }),
-        bar_total_width = 30,    //用于记录带有柱状图的混合图中,单列柱状图占用的总宽度
+        bar_total_width = 0,    //用于记录带有柱状图的混合图中,单列柱状图占用的总宽度
         bar_total_interval = 0  //同上//---记录总间隔宽度
         // _RENDER = {} //输出到渲染层的对象  废弃
 

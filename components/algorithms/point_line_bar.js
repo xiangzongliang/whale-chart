@@ -10,7 +10,7 @@ const point_line_bar = ({all, arr, _CORE, ROW_CONFIG, _DIFF, X_left=0, X_right=0
 
 
         for(let ai in arr){
-            let x = (_DIFF.width - X_left - (X_right ? X_right : _box_.right) - total_width - total_interval) / (arr.length-1) * parseInt(ai) + X_left + deviation,
+            let x = (_DIFF.width - 20 - X_left - (X_right ? X_right : _box_.right) - total_width - total_interval) / (arr.length-1) * parseInt(ai) + X_left + deviation + 10,
                 y,
                 val = parseFloat(arr[ai]),
                 isBreak = false;    //是否有断点,折线图断点计算多段线展示
@@ -27,9 +27,7 @@ const point_line_bar = ({all, arr, _CORE, ROW_CONFIG, _DIFF, X_left=0, X_right=0
                 }else if(val == 0){
                     y = zero_axis
                 }else{
-                    
                     y = zero_axis - (val / N_min * (_CORE.zero_bottom * _CORE.item_height) * -1 )
-                    console.log(val,y)
                 }
             }else{
                 y = (_DIFF.height - _box_.top - _box_.bottom) - (val / diff.max_diff * (_DIFF.height - _box_.top - _box_.bottom)) + _box_.top

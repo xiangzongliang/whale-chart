@@ -14,9 +14,9 @@ let RD_grid = ({ zrender, _CORE, ROW_CONFIG, X_left, X_right,_DIFF  }) => {
                 x2 : _DIFF.width - (X_right ? X_right : _box_.right),
                 y2 : y,
             },
-            style: Object.assign({},ROW_CONFIG.grid.horizontal.lineStyle,{
-                lineWidth: dpr(ROW_CONFIG.grid.horizontal.lineStyle.lineWidth),
-                lineDash: arr_zoom({arr:ROW_CONFIG.grid.horizontal.lineStyle.lineDash,dpr})
+            style: Object.assign({},ROW_CONFIG.grid.horizontal.style,{
+                lineWidth: dpr(ROW_CONFIG.grid.horizontal.style.lineWidth),
+                lineDash: arr_zoom({arr:ROW_CONFIG.grid.horizontal.style.lineDash,dpr})
             }),
             zlevel:0
         })

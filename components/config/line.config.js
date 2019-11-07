@@ -3,7 +3,7 @@ let line_config = {
     box:{
         top:30,
         bottom:30,
-        left:30,
+        left:20,
         right:20
     },
     //颜色数组
@@ -50,13 +50,6 @@ let line_config = {
                     textVerticalAlign:"middle"
                 }
             },
-            textStyle:{
-                fontWeight:400,
-                fontSize:12,
-                textFill:"#666666",
-                textAlign: "right",
-                textVerticalAlign:"middle"
-            },
             formatter:(val)=>{
                 return val
             },
@@ -64,18 +57,15 @@ let line_config = {
         // [ line | bar ] //适合双轴
         right:{
             paddingRight:10,
-            // lineStyle:{
-            //     show:false,
-            //     lineWidth:1,
-            //     stroke:"#ccc",
-            //     lineDash:[0],
-            // },
-            textStyle:{
-                fontWeight:400,
-                fontSize:12,
-                textFill:"#666666",
-                textAlign: "left",
-                textVerticalAlign:"middle"
+            text:{
+                show:true,
+                style:{
+                    fontWeight:400,
+                    fontSize:12,
+                    textFill:"#666666",
+                    textAlign: "left",
+                    textVerticalAlign:"middle"
+                }
             },
             formatter:(val)=>{
                 return val
@@ -90,8 +80,8 @@ let line_config = {
         show:true,
         horizontal:{ //水平背景线
             show:true,  //是否显示
-            num:4,      //线条数量
-            lineStyle:{
+            num:5,      //线条数量
+            style:{
                 lineWidth:0.5,
                 stroke:"#CCCCCC",
                 lineDash:[5,3],
@@ -148,7 +138,7 @@ let line_config = {
         },
         //提示 [ all ]
         tip:{
-            show:true,
+            show:false,
             // formatter(text,data){
             //     return text
             // },
