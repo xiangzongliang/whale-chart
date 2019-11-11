@@ -3,15 +3,21 @@ let RD_grid = ({ zrender, _CORE, ROW_CONFIG, X_left, X_right,_DIFF  }) => {
     let RENDER_grid = new zrender.Group(),
         dpr = ROW_CONFIG.dpr,
         all_gb_line = _CORE.zero_top + _CORE.zero_bottom + 1,
-        _box_ = ROW_CONFIG._box_
+        _box_ = ROW_CONFIG._box_,
+        axis_bottom = ROW_CONFIG.axis.bottom,
+        chart_interval = dpr(ROW_CONFIG.chart.interval) //特殊值
     
     for(let gi=0; gi<all_gb_line;gi++){
+
+        if(axis_bottom.line.show == true && gi == (all_gb_line-1)){
+            break;
+        }
         let y = _CORE.item_height * gi + _box_.top
         let grid_line = new zrender.Line({
             shape:{
-                x1 : X_left,
+                x1 : X_left + chart_interval / 2,
                 y1 : y,
-                x2 : _DIFF.width - (X_right ? X_right : _box_.right),
+                x2 : _DIFF.width - (X_right ? X_right : _box_.right) - chart_interval / 2,
                 y2 : y,
             },
             style: Object.assign({},ROW_CONFIG.grid.horizontal.style,{

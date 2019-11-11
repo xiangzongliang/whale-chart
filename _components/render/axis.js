@@ -124,7 +124,6 @@ let axis_left = ({zrender, ROW_CONFIG, _DIFF}) => {
 
         _DIFF._cache.leftTextMaxWidth = dpr(text_length * dpr(ROW_CONFIG.axis.left.textStyle.fontSize/3.5))
 
-        console.log(_DIFF._cache.leftTextMaxWidth)
 
 
         for(let li=0; li <= all_line; li++){
@@ -189,9 +188,6 @@ let axis_right = ({zrender, ROW_CONFIG, _DIFF}) => {
 
     }
 
-
-
-    // console.log(_DIFF)
 
 
 

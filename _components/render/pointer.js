@@ -97,7 +97,6 @@ let vertical_pointer = ({ zrender, ROW_CONFIG, _DIFF, CHART, REFS, get_color }) 
         touch_Y    //用来记录点击之后(滑动上下距离大小)是否阻止默认事件
         
 
-        // console.log(all_points)
 
 
 

@@ -174,6 +174,7 @@ let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
         render_key = ROW_CONFIG.dimension.bottom.key,
         type =  axis_bottom.interval.type,
         formatter = axis_bottom.formatter,
+        chart_interval = dpr(ROW_CONFIG.chart.interval), //特殊值
         points = _DIFF.all_points[0].points //拿到第一组点集合  通过 X 坐标渲染全部 X 轴文字
 
 
@@ -184,8 +185,8 @@ let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
         if(axis_bottom.line.show === true){
             let bottom_line = new zrender.Line({
                 shape:{
-                    x1 : X_left,
-                    x2 : _DIFF.width - (X_right ? X_right : _box_.right),
+                    x1 : X_left + chart_interval/2,
+                    x2 : _DIFF.width - (X_right ? X_right : _box_.right) - chart_interval/2,
                     y1 : _DIFF.height - _box_.bottom,
                     y2 : _DIFF.height - _box_.bottom
                 },
@@ -205,7 +206,25 @@ let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
          */
         if(axis_bottom.text.show === true){
             for(let bi in points){
-                let _text = chartData[bi][render_key]
+
+                let _text = chartData[bi][render_key],
+                    textAlign = 'center',
+                    RD_text = ({X,T,TA}) =>{
+                        let render_bottom_text = new zrender.Rect({
+                            shape:{
+                                r : 0,
+                                x : X || points[bi][0] - chart_interval / 2,
+                                y : _DIFF.height
+                            },
+                            style:Object.assign({},axis_bottom.text.style,{
+                                text : T,
+                                textAlign : TA,
+                                fontSize : dpr(axis_bottom.text.style.fontSize),
+                                // fontWeight : dpr(axis_bottom.text.style.fontWeight)
+                            }) 
+                        })
+                        RENDER_bottom_axis.add(render_bottom_text)
+                    }
                 //执行用户自定义
                 if(formatter && zrender.util.isFunction(formatter)){
                     let n_text = formatter(_text,chartData[bi])
@@ -213,23 +232,31 @@ let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
                         _text = n_text
                     }
                 }
-    
-    
-    
-                //渲染底部文字
-                let render_bottom_text = new zrender.Rect({
-                    shape:{
-                        r : 0,
-                        x : points[bi][0],
-                        y : _DIFF.height
-                    },
-                    style:Object.assign({},axis_bottom.text.style,{
-                        text : _text,
-                        fontSize : dpr(axis_bottom.text.style.fontSize),
-                        fontWeight : dpr(axis_bottom.text.style.fontWeight)
-                    }) 
-                })
-                RENDER_bottom_axis.add(render_bottom_text)
+
+
+                if(type == 'between'){
+                    if(bi == 0){
+                        RD_text({
+                            X:points[bi][0] - chart_interval / 2,
+                            T:_text,
+                            TA:'left'
+                        }) 
+                    }else if(bi == (chartData.length - 1)){
+                        RD_text({
+                            X:points[bi][0] + chart_interval / 2,
+                            T:_text,
+                            TA:'right'
+                        }) 
+                    } 
+                }else{
+        
+                    //渲染底部文字
+                    RD_text({
+                        X:points[bi][0],
+                        T:_text,
+                        TA:textAlign
+                    })
+                }
             }
         }
         

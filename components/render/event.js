@@ -13,7 +13,8 @@ let touchHandler = [
  */
 let isMouse = () => {
     // return "ontouchend" in document ? true : false;
-    return "onmousemove" in document ? true : false;
+    // return "onmousemove" in document ? true : false;
+    return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
     //该方法来源于jquery mobile
 }
 

@@ -12,7 +12,6 @@ const core_line_bar = ({ ROW_CONFIG, _DIFF, arr}) =>{
         zero_bottom,
         zero_axis
 
-    console.log('diff',diff)
 
     if(max <= 0){
         max = 0

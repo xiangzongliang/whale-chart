@@ -5,8 +5,6 @@ const axis_grid = ({ _CORE, ROW_CONFIG}) => {
         all_line = _CORE.zero_top + _CORE.zero_bottom + 1,
         max_val = _CORE.zero_top * _CORE.item_val
 
-
-        console.log(_CORE.item_val,max_val)
     
     for(let xi=0;xi<all_line;xi++){
         let text = max_val - _CORE.item_val * xi
@@ -20,8 +18,6 @@ const axis_grid = ({ _CORE, ROW_CONFIG}) => {
         })
     }
 
-
-    console.log(_CORE,ROW_CONFIG,_axis)
     
     return {
         text:_axis

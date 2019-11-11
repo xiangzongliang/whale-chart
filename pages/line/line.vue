@@ -1,7 +1,7 @@
 <template>
     <div>
         <blend-chart class="line" :opction="chartOpction"/>
-        <div class="content">neirong</div>
+        <div class="content">neirong12</div>
     </div>
 </template>
 <script>
@@ -11,7 +11,7 @@ export default {
         return {
             chartOpction:{
                 box:{
-                    // right:50,
+                    right:50,
                     // left:10
                 },
                 dimension:{
@@ -19,26 +19,31 @@ export default {
                         key:'name',
                     }
                 },
-                columns:[{
-                    key:'key',
+                columns:[
+                    {
+                    key:'val',
                     // type:'bar',
-                    axis:'right',
+                    // axis:'right',
                     line:{
-                        smooth:'0.3'
+                        smooth:'0'
                     },
                     // bar:{
                     //     width:20
                     // }
-                },{
-                    key:'age',
-                    type:'bar'
-                },{
-                    key:'val',
-                    // type:'bar',
-                    line:{
-                        smooth:'0.3'
-                    },
                 }
+                // ,{
+                //     key:'age',
+                //     type:'bar',
+                //     bar:{
+                //         width:8
+                //     }
+                // },{
+                //     key:'val',
+
+                //     line:{
+                //         smooth:'0.3'
+                //     },
+                // }
                 ],
                 //数据集合
                 chartData:[],
@@ -61,11 +66,11 @@ export default {
                  */
                 
                 axis:{
-                //     bottom:{
-                //         interval:{ //间隔
-                //             type:'all',  // 'all'    'between'
-                //         },
-                //     },
+                    bottom:{
+                        interval:{ //间隔
+                            type:'between',  // 'all'    'between'
+                        },
+                    },
                     // left:{
                     //     paddingLeft:55,
                     //     textStyle:{},
@@ -74,12 +79,11 @@ export default {
                     //         return (val/1000000).toFixed(2) +'亿'
                     //     },
                     // },
-                //     right:{
-                //         formatter:(val)=>{
-                //             // return [val.toFixed(1),'{_name|2019}'].join('\n') 
-                //             return val.toFixed(2)
-                //         },
-                //     }
+                    // right:{
+                    //     formatter:(val)=>{
+                    //         return val.toFixed(2)
+                    //     },
+                    // }
                 },
                 // colors:['#CCA663','#CCA663','#CCA663'],
                 // box:{
@@ -118,39 +122,46 @@ export default {
                 //         style:{}
                 //     }
                 // }
-                // event:{
-                //     pointer:{
-                //         update(val){
-                //             console.log(val)
-                //         }
-                //     }
-                // }
+                event:{
+                    pointer:{
+                        update:(val)=>{
+                            console.log(val)
+                        }
+                    },
+                    error:(ctx)=>{
+                        console.log(ctx)
+                    },
+                    //图表被更新
+                    update:(ctx)=>{
+                        console.log(ctx)
+                    }
+                }
                 
             }
         }
     },
     mounted(){
         // this.chartOpction.chartData = [{
-        //     key:28,
+        //     key:100,
         //     age:27,
-        //     val:30
+        //     val:null
         // },{
-        //     key:-28,
+        //     key:126,
         //     age:23,
-        //     val:26
+        //     val:null
         // },{
-        //     key:-50,
+        //     key:200,
         //     age:20,
-        //     val:20
+        //     val:null
         // },{
-        //     key:9,
+        //     key:900,
         //     age:18,
-        //     val:16
+        //     val:null
         // },{
-        //     key:1,
+        //     key:1000,
         //     age:26,
-        //     val:30
-        // },]
+        //     val:null
+        // }]
         this.$axios({
             method:'post',
             url:'/api/chart',

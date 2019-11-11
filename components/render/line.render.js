@@ -8,17 +8,25 @@ import { axis_grid } from '../algorithms/axis_grid'
 //RENDER 
 import { RD_left_axis, RD_right_axis, RD_bottom_axis } from '../render/axis'
 import { RD_grid } from '../render/grid'
-import { RD_line_bar } from './line_bar.render'
+import { RD_line_bar } from './line_bar'
 import { RD_pointer } from './pointer'
-let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
+let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
     //判断是否渲染
-    if(ROW_CONFIG.chartData && ROW_CONFIG.chartData.length<=0){
-        console.error('no data')
+    if(ROW_CONFIG.chartData && ROW_CONFIG.chartData.length <= 0){
+        ROW_CONFIG.event.error({
+            state:-1,
+            frequency,
+            msg:`图表库-可显示数据为空`
+        })
         return;
     }
 
     if(ROW_CONFIG.columns && ROW_CONFIG.columns.length<=0){
-        console.error('no columns')
+        ROW_CONFIG.event.error({
+            state:0,
+            frequency,
+            msg:`图表库-没有可解析的轴`
+        })
         return;
     }
 
@@ -73,8 +81,9 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             dpr:ROW_CONFIG.dpr
         }),
         bar_total_width = 0,    //用于记录带有柱状图的混合图中,单列柱状图占用的总宽度
-        bar_total_interval = 0  //同上//---记录总间隔宽度
+        bar_total_interval = 0,  //同上//---记录总间隔宽度
         // _RENDER = {} //输出到渲染层的对象  废弃
+        isDataErr = true   //true 全部异常 false 其中一个有值 记录数据是否全部异常  //全部没数据直接返回异常回调
 
 
 
@@ -119,14 +128,38 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
              * 计算坐标点
              */
             for(let di in chartData){
-                if(axis == 'right'){
-                    all_data_right.push(chartData[di][key])
-                }else{
-                    all_data_left.push(chartData[di][key])
+                let cut_data = chartData[di][key],
+                    flt_data = parseFloat(cut_data)
+
+                /**
+                 * 只有所有数据
+                 */
+                if(isDataErr &&  isNaN(flt_data) === false){
+                    isDataErr = false
                 }
-                all_data.push(chartData[di][key])
+
+                if(axis == 'right'){
+                    all_data_right.push(cut_data)
+                }else{
+                    all_data_left.push(cut_data)
+                }
+                all_data.push(cut_data)
             }
         }
+
+
+        /**
+         * 如果所有数据都异常  直接推出   回调错误
+         */
+        if(isDataErr == true){
+            ROW_CONFIG.event.error({
+                state:1,
+                frequency,
+                msg:`图表库-所有数据异常`
+            })
+            return;
+        }
+        
 
 
 
@@ -218,7 +251,6 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
 
 
                 for(let r_li in chartData){
-                    // console.log(chartData[r_li])
                     cur_arr.push(chartData[r_li][key])
                 }
 
@@ -284,7 +316,8 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS }) =>{
             _DIFF,
             ROW_CONFIG,
             get_color,
-            REFS
+            REFS,
+            CHART
         })
 
 

@@ -7,6 +7,7 @@ import { random } from './algorithms/random'
 import { default_config } from './config/default.config'
 import { line_config } from './config/line.config'
 import { line_bar_render } from './render/line.render'
+let FEQY = 0 //更新了几次
 export default {
     data(){
         return {
@@ -24,10 +25,12 @@ export default {
         }
     },
     mounted(){
-        this.renderChart()
+        this.renderChart({
+            frequency:0
+        })
     },
     methods:{
-        renderChart(){
+        renderChart({ frequency }){
             zrender.util.merge(this.ROW_CONFIG,default_config,true)
             zrender.util.merge(this.ROW_CONFIG,line_config,true)
             zrender.util.merge(this.ROW_CONFIG,this.opction,true)
@@ -40,16 +43,32 @@ export default {
                 height:             this.ROW_CONFIG.dpr(this.ROW_CONFIG.init.height),
             })
 
+
+            /**
+             * 回调图表绘制之前
+             */
+            this.ROW_CONFIG.event.update(Object.assign({},{
+                zrender,
+                CHART:this.CHART,
+                ROW_CONFIG:this.ROW_CONFIG,
+                REFS:this.$refs[this.DOM_REF],
+                frequency
+            }))
+
             line_bar_render({
                 zrender,
                 CHART:this.CHART,
                 ROW_CONFIG:this.ROW_CONFIG,
-                REFS:this.$refs[this.DOM_REF]
+                REFS:this.$refs[this.DOM_REF],
+                frequency
             })
         },
         upChart(){
            this.CHART.dispose() 
-           this.renderChart()
+           FEQY ++
+           this.renderChart({
+               frequency : FEQY
+           })
         }
     },
     watch:{

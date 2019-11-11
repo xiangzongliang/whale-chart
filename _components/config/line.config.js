@@ -193,11 +193,11 @@ let line_config = {
         },
         //图表被按下
         touchstart(){
-            console.log('touchstart')
+            // console.log('touchstart')
         },
         //图表松开
         touchend(){
-            console.log('touchend')
+            // console.log('touchend')
         },
 
         //图表渲染之前

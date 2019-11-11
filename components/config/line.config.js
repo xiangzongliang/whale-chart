@@ -75,12 +75,16 @@ let line_config = {
 
         // }
     },
+    //核心展示区域
+    chart:{
+        interval:20
+    },
     //背景网格 [ line | bar ]
     grid:{
         show:true,
         horizontal:{ //水平背景线
             show:true,  //是否显示
-            num:5,      //线条数量
+            num:3,      //线条数量
             style:{
                 lineWidth:0.5,
                 stroke:"#CCCCCC",
@@ -104,7 +108,7 @@ let line_config = {
             show:true, //是否显示转折点 
             item:[{
                 shape:{
-                    r:0,
+                    r:2,
                 },
                 style:{
                     fill:'#fff',
@@ -114,7 +118,6 @@ let line_config = {
 
             //选中时的样式 于 point 配置相同
             hover:{
-                show:true, 
                 item:[{
                     shape:{
                         r:8,
@@ -175,16 +178,14 @@ let line_config = {
             //指示器更新之后回调
             update:(opction)=>{}
         },
+        //图表异常回调集合 比如:无数据、数据异常 无法渲染、没有指定渲染key
+        error:()=>{},
         //图表被按下
-        touchstart(){},
+        touchstart:()=>{},
         //图表松开
-        touchend(){},
-        //图表渲染之前
-        start(){},
-        //图表渲染结束
-        end(){},
+        touchend:()=>{},
         //图表被更新
-        update(){} 
+        update:()=>{}
     }
 
 }
