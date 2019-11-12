@@ -7,6 +7,7 @@ import { random } from './algorithms/random'
 import { default_config } from './config/default.config'
 import { line_config } from './config/line.config'
 import { line_bar_render } from './render/line.render'
+import { THEME } from './theme/theme'
 let FEQY = 0 //更新了几次
 export default {
     data(){
@@ -31,9 +32,18 @@ export default {
     },
     methods:{
         renderChart({ frequency }){
+            let theme = THEME(zrender,this.opction.selectColor || 'default') //
+
+
             zrender.util.merge(this.ROW_CONFIG,default_config,true)
             zrender.util.merge(this.ROW_CONFIG,line_config,true)
+            zrender.util.merge(this.ROW_CONFIG,theme,true)
             zrender.util.merge(this.ROW_CONFIG,this.opction,true)
+
+
+
+            console.log(this.ROW_CONFIG,'23444')
+
 
 
             this.CHART = zrender.init(this.$refs[this.DOM_REF],{

@@ -19,6 +19,7 @@ export default {
                         key:'name',
                     }
                 },
+                selectColor:'white',
                 columns:[
                     {
                     key:'val',

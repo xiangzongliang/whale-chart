@@ -357,7 +357,10 @@ const RD_pointer = ({ zrender, _DIFF, ROW_CONFIG, get_color, REFS, CHART }) => {
 
     if(isMouse() == true){ //优先使用touch事件
         REFS.addEventListener('touchstart',(e)=>{
-            // touch_Y = e.zrY
+            move_point({
+                X:e.zrX,
+                Y:e.zrY,
+            })
             ROW_CONFIG.event.touchstart()
         })
         REFS.addEventListener('touchmove',(e)=>{

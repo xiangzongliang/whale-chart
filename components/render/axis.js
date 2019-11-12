@@ -7,26 +7,15 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
     let RENDER_left_axis = new zrender.Group(),
         dpr = ROW_CONFIG.dpr,
         _box_ = ROW_CONFIG._box_,
-        max_V = _CORE.zero_top * _CORE.item_val,
-        min_V = _CORE.zero_bottom * _CORE.item_val,
-        max_length = `${max_V}`.length,
-        min_length = `${min_V}`.length,
-        text_max_length = max_length,
+        text_max_length = 0,
         formatter = ROW_CONFIG.axis.left.formatter,
-        x = dpr(10)
+        x = 0,
+        render_left_arr = []
 
 
 
         if(ROW_CONFIG.axis.left.text.show === true){
-
-        
-            if(min_length > max_length){
-                text_max_length = min_length
-            }
-
-            //通过文字的长度计算向右偏移的位置
-            x = text_max_length * ROW_CONFIG.axis.left.text.style.fontSize / 2 + ROW_CONFIG.axis.left.paddingLeft + _box_.left
-
+            
             let render_text = ({text,y}) => {
                 let left_axis = new zrender.Rect({
                     shape:{
@@ -51,10 +40,21 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
                 let text = _CORE.item_val * (_CORE.zero_top - ti),
                     y = ti * _CORE.item_height + _box_.top
                     text = formatter(text) || text
-                    render_text({
+
+
+                    let text_length = `${text}`.length //记录文字的长度
+
+                    if(text_length > text_max_length){
+                        text_max_length = text_length
+                    }
+
+
+
+                    render_left_arr.push({
                         text,
-                        y
+                        y  
                     })
+
             }
 
             //0轴以下的文字
@@ -62,10 +62,24 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
                 let text = _CORE.item_val * (bi+1) * -1,
                     y = (bi + _CORE.zero_top + 1)* _CORE.item_height + _box_.top
                     text = formatter(text) || text
-                    render_text({
+
+                    let text_length = `${text}`.length //记录文字的长度
+
+                    if(text_length > text_max_length){
+                        text_max_length = text_length
+                    }
+
+
+                    render_left_arr.push({
                         text,
-                        y
+                        y  
                     })
+            }
+
+            //通过文字的长度计算向右偏移的位置
+            x = text_max_length * dpr(ROW_CONFIG.axis.left.text.style.fontSize) / 2 + ROW_CONFIG.axis.left.paddingLeft + _box_.left
+            for(let lai in render_left_arr){
+                render_text(render_left_arr[lai])
             }
         } 
 
@@ -90,23 +104,13 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
     let RENDER_right_axis = new zrender.Group(),
         dpr = ROW_CONFIG.dpr,
         _box_ = ROW_CONFIG._box_,
-        max_V = _CORE.zero_top * _CORE.item_val,
-        min_V = _CORE.zero_bottom * _CORE.item_val,
-        max_length = `${max_V}`.length,
-        min_length = `${min_V}`.length,
-        text_max_length = max_length,
+        text_max_length = 0,
         formatter = ROW_CONFIG.axis.right.formatter,
-        x = dpr(10)
+        x = 0,
+        render_left_arr = []
 
 
         if(ROW_CONFIG.axis.right.text.show === true){
-
-            if(min_length > max_length){
-                text_max_length = min_length
-            }
-
-            //通过文字的长度计算向右偏移的位置
-            x = _DIFF.width - (text_max_length * ROW_CONFIG.axis.right.text.style.fontSize / 2 + ROW_CONFIG.axis.right.paddingRight ) - _box_.right
 
             let render_text = ({text,y}) => {
                 let left_axis = new zrender.Rect({
@@ -132,9 +136,15 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
                 let text = _CORE.item_val * (_CORE.zero_top - ti),
                     y = ti * _CORE.item_height + _box_.top
                     text = formatter(text) || text
-                    render_text({
+
+                    let text_length = `${text}`.length //记录文字的长度
+                    if(text_length > text_max_length){
+                        text_max_length = text_length
+                    }
+
+                    render_left_arr.push({
                         text,
-                        y
+                        y  
                     })
             }
 
@@ -143,11 +153,24 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
                 let text = _CORE.item_val * (_CORE.zero_bottom - bi) * -1,
                     y = (bi + _CORE.zero_top + 1)* _CORE.item_height + _box_.top
                     text = formatter(text) || text
-                    render_text({
+
+
+                    let text_length = `${text}`.length //记录文字的长度
+                    if(text_length > text_max_length){
+                        text_max_length = text_length
+                    }
+
+                    render_left_arr.push({
                         text,
-                        y
+                        y  
                     })
-            } 
+            }
+
+            //通过文字的长度计算向右偏移的位置
+            x = _DIFF.width - (text_max_length * dpr(ROW_CONFIG.axis.right.text.style.fontSize) / 2 + ROW_CONFIG.axis.right.paddingRight ) - _box_.right
+            for(let lai in render_left_arr){
+                render_text(render_left_arr[lai])
+            }
         }
 
     return {
@@ -237,13 +260,15 @@ let RD_bottom_axis = ({ zrender, _DIFF, ROW_CONFIG, X_left, X_right, }) => {
                 if(type == 'between'){
                     if(bi == 0){
                         RD_text({
-                            X:points[bi][0] - chart_interval / 2,
+                            // X:points[bi][0] - chart_interval / 2,
+                            X:points[bi][0],
                             T:_text,
                             TA:'left'
                         }) 
                     }else if(bi == (chartData.length - 1)){
                         RD_text({
-                            X:points[bi][0] + chart_interval / 2,
+                            // X:points[bi][0] + chart_interval / 2,
+                            X:points[bi][0],
                             T:_text,
                             TA:'right'
                         }) 

@@ -34,8 +34,8 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
 
     let dpr = ROW_CONFIG.dpr,
         columns = ROW_CONFIG.columns || [],         //需要显示的数据 
+        colors =  ROW_CONFIG.colors,
         get_color = (index) => {
-            let colors = ROW_CONFIG.colors
             return colors[(index*1) % colors.length]
         },
         get_bar = (index) => {

@@ -3,11 +3,11 @@ let line_config = {
     box:{
         top:30,
         bottom:30,
-        left:20,
-        right:20
+        left:30,
+        right:30
     },
-    //颜色数组
-    colors:['#CCA663','#DF6666','#588EEB','#6AA84F','#9800FF'],
+    //当前选择的颜色的 key
+    selectTheme:'default',
     //轴线
     axis:{
         // [ line | bar ]
@@ -71,9 +71,6 @@ let line_config = {
                 return val
             },
         },
-        // render:(ctx,zrender)=>{
-
-        // }
     },
     //核心展示区域
     chart:{
@@ -111,7 +108,7 @@ let line_config = {
                     r:2,
                 },
                 style:{
-                    fill:'#fff',
+                    // fill:'#fff',
                     lineWidth:1,
                 }
             }],
@@ -142,9 +139,6 @@ let line_config = {
         //提示 [ all ]
         tip:{
             show:false,
-            // formatter(text,data){
-            //     return text
-            // },
             style:{
                 textBackgroundColor:'rgba(0,0,0,0.5)',
                 textBorderColor:'rgba(153, 153, 153, 0.25)',
