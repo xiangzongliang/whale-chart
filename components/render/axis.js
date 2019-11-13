@@ -1,4 +1,5 @@
 import { arr_zoom } from '../algorithms/arr_zoom'
+import { abnormal_float } from '../algorithms/abnormal_float'
 /**
  * 渲染左侧的轴
  * @param {*} param0 
@@ -39,6 +40,8 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
             for(let ti=0; ti <= _CORE.zero_top; ti++){
                 let text = _CORE.item_val * (_CORE.zero_top - ti),
                     y = ti * _CORE.item_height + _box_.top
+                    text = abnormal_float(text)
+
                     text = formatter(text) || text
 
 
@@ -61,6 +64,7 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
             for(let bi = 0; bi < _CORE.zero_bottom; bi++){
                 let text = _CORE.item_val * (bi+1) * -1,
                     y = (bi + _CORE.zero_top + 1)* _CORE.item_height + _box_.top
+                    text = abnormal_float(text)
                     text = formatter(text) || text
 
                     let text_length = `${text}`.length //记录文字的长度
@@ -135,6 +139,7 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
             for(let ti=0; ti <= _CORE.zero_top; ti++){
                 let text = _CORE.item_val * (_CORE.zero_top - ti),
                     y = ti * _CORE.item_height + _box_.top
+                    text = abnormal_float(text)
                     text = formatter(text) || text
 
                     let text_length = `${text}`.length //记录文字的长度
@@ -152,6 +157,7 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
             for(let bi = 0; bi < _CORE.zero_bottom; bi++){
                 let text = _CORE.item_val * (_CORE.zero_bottom - bi) * -1,
                     y = (bi + _CORE.zero_top + 1)* _CORE.item_height + _box_.top
+                    text = abnormal_float(text)
                     text = formatter(text) || text
 
 

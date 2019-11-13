@@ -24,6 +24,22 @@ let max_diff = (arr) => {
         callback_max = abs_max,
         max_diff;
 
+        /**
+         * 针对最大值和最小值相同的时候进行处理
+         */
+        if(max == min && max != 0){
+            if(max > 0 && min > 0){
+                min = 0
+                abs_min = 0
+            }
+            if(max < 0 && min < 0){
+                max = 0
+                abs_max = 0
+            }
+        }
+
+
+
         if(min < 0){
             isNegative = true
         }
@@ -37,6 +53,12 @@ let max_diff = (arr) => {
             max_diff = abs_max
         }else{
             max_diff = abs_max + abs_min
+        }
+
+
+        //这里处理最大值和最小值异常 补充
+        if(isNaN(max_diff) === true || isFinite(max_diff) === false){
+            max_diff = 0
         }
 
 

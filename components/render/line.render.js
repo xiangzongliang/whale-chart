@@ -31,7 +31,6 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
     }
 
 
-
     let dpr = ROW_CONFIG.dpr,
         columns = ROW_CONFIG.columns || [],         //需要显示的数据 
         colors =  ROW_CONFIG.colors,
@@ -91,8 +90,6 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
          * 重新赋值 box 这将对不同机型兼容计算有好处
          */
         ROW_CONFIG._box_ = _box_
-
-        
 
 
         let last_interval = 0, //用于记录最后一个间隙值 
@@ -181,6 +178,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
                 arr:all_data_right
             })
         }
+
         
 
 

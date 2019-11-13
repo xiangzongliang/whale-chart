@@ -1,31 +1,31 @@
-let white_color = {
-    colors:['#EDD095','#ACC4F0','#FF9800'], //绘图的颜色顺序
+let default_color = {
+    colors:['#CCA663','#6386CC','#FF9800','#6AA84F','#9800FF'], //绘图的颜色顺序
 
     //轴 [线、字] 颜色
     axis:{
         left:{
             text:{
                 style:{
-                    textFill:'#666666'
+                    textFill:'#9B9B9C'
                 }
             }
         },
         right:{
             text:{
                 style:{
-                    textFill:'#666666'
+                    textFill:'#9B9B9C'
                 }
             }
         },
         bottom:{
             line:{
                 style:{
-                    stroke:"#CCCCCC",
+                    stroke:"#464647",
                 }
             },
             text:{
                 style:{
-                    textFill:'#666666'
+                    textFill:'#9B9B9C'
                 }
             }
         }
@@ -36,7 +36,7 @@ let white_color = {
     grid:{
         horizontal:{
             style:{
-                stroke:'#CCCCCC'
+                stroke:'#464647'
             }
         }
     },
@@ -51,5 +51,5 @@ let white_color = {
 
 
 export {
-    white_color
+    default_color
 }

@@ -22,7 +22,7 @@ export default {
                 selectColor:'white',
                 columns:[
                     {
-                    key:'val',
+                    key:'age',
                     // type:'bar',
                     // axis:'right',
                     line:{
@@ -142,34 +142,34 @@ export default {
         }
     },
     mounted(){
-        // this.chartOpction.chartData = [{
-        //     key:100,
-        //     age:27,
-        //     val:null
-        // },{
-        //     key:126,
-        //     age:23,
-        //     val:null
-        // },{
-        //     key:200,
-        //     age:20,
-        //     val:null
-        // },{
-        //     key:900,
-        //     age:18,
-        //     val:null
-        // },{
-        //     key:1000,
-        //     age:26,
-        //     val:null
-        // }]
+        this.chartOpction.chartData = [{
+            key:0,
+            age:100,
+            val:null
+        },{
+            key:0,
+            age:100,
+            val:null
+        },{
+            key:0,
+            age:100,
+            val:null
+        },{
+            key:0,
+            age:100,
+            val:null
+        },{
+            key:0.01,
+            age:100,
+            val:null
+        }]
         this.$axios({
             method:'post',
             url:'/api/chart',
             data:{},
         }).then(res=>{
             console.log(res.data.data)
-            this.chartOpction.chartData = res.data.data
+            // this.chartOpction.chartData = res.data.data
         })
     },  
     components:{
