@@ -40,7 +40,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
         get_bar = (index) => {
             return zrender.util.merge({
                 //柱状图默认配置
-                width:dpr(13), //默认宽度
+                width:dpr(11), //默认宽度
                 interval:dpr(2), //默认间隔
                 textShow:true,  //是否显示柱状图的文字
                 textStyle:{     //柱状图文字样式

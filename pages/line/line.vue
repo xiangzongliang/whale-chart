@@ -10,42 +10,37 @@ export default {
     data(){
         return {
             chartOpction:{
-                box:{
-                    right:50,
-                    // left:10
+                init:{
+                    height:260
                 },
+                // box:{
+                    // right:50,
+                    // left:10
+                // },
                 dimension:{
                     bottom:{
                         key:'name',
                     }
                 },
-                selectColor:'white',
+                selectColor:'white',//white b
                 columns:[
                     {
                     key:'age',
-                    // type:'bar',
-                    // axis:'right',
+                    axis:'right',
                     line:{
                         smooth:'0'
-                    },
-                    // bar:{
-                    //     width:20
-                    // }
+                    }
                 }
-                // ,{
-                //     key:'age',
-                //     type:'bar',
-                //     bar:{
-                //         width:8
-                //     }
-                // },{
-                //     key:'val',
+                ,{
+                    key:'val',
+                    type:'bar',
+                },{
+                    key:'val',
 
-                //     line:{
-                //         smooth:'0.3'
-                //     },
-                // }
-                ],
+                    line:{
+                        smooth:'0.3'
+                    },
+                }],
                 //数据集合
                 chartData:[],
                 /**
@@ -72,14 +67,14 @@ export default {
                             type:'between',  // 'all'    'between'
                         },
                     },
-                    // left:{
-                    //     paddingLeft:55,
-                    //     textStyle:{},
-                    //     formatter:(val)=>{
-                    //         // return [val.toFixed(1),'{_name|2019}'].join('\n') 
-                    //         return (val/1000000).toFixed(2) +'亿'
-                    //     },
-                    // },
+                    left:{
+                        // paddingLeft:55,
+                        textStyle:{},
+                        formatter:(val)=>{
+                            // return [(val/10000).toFixed(2),'{_name|万}'].join('\n') 
+                            return (val/10000).toFixed(2) +'万'
+                        },
+                    },
                     // right:{
                     //     formatter:(val)=>{
                     //         return val.toFixed(2)
@@ -90,7 +85,11 @@ export default {
                 // box:{
                 //     right:40
                 // },
-                // grid:{},
+                grid:{
+                    horizontal:{ //水平背景线
+                        num:5,      //线条数量
+                    }
+                },
                 // pointer:{
                 //     vertical:{},
                 //     point:{
@@ -142,34 +141,34 @@ export default {
         }
     },
     mounted(){
-        this.chartOpction.chartData = [{
-            key:0,
-            age:100,
-            val:null
-        },{
-            key:0,
-            age:100,
-            val:null
-        },{
-            key:0,
-            age:100,
-            val:null
-        },{
-            key:0,
-            age:100,
-            val:null
-        },{
-            key:0.01,
-            age:100,
-            val:null
-        }]
+        // this.chartOpction.chartData = [{
+        //     key:0,
+        //     age:100,
+        //     val:null
+        // },{
+        //     key:0,
+        //     age:100,
+        //     val:null
+        // },{
+        //     key:0,
+        //     age:100,
+        //     val:null
+        // },{
+        //     key:0,
+        //     age:100,
+        //     val:null
+        // },{
+        //     key:0.01,
+        //     age:100,
+        //     val:null
+        // }]
         this.$axios({
             method:'post',
             url:'/api/chart',
             data:{},
         }).then(res=>{
             console.log(res.data.data)
-            // this.chartOpction.chartData = res.data.data
+            this.chartOpction.chartData = res.data.data
         })
     },  
     components:{

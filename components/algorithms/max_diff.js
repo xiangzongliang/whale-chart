@@ -49,8 +49,12 @@ let max_diff = (arr) => {
 
         if(max<0){
             max_diff = abs_min
+            max = 0
+            abs_max = 0
         }else if(min>0){
             max_diff = abs_max
+            min = 0
+            abs_min = 0
         }else{
             max_diff = abs_max + abs_min
         }

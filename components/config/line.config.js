@@ -3,8 +3,8 @@ let line_config = {
     box:{
         top:30,
         bottom:30,
-        left:30,
-        right:30
+        left:20,
+        right:20
     },
     //当前选择的颜色的 key
     selectTheme:'default',
@@ -83,7 +83,7 @@ let line_config = {
             show:true,  //是否显示
             num:3,      //线条数量
             style:{
-                lineWidth:0.5,
+                lineWidth:0.2,
                 stroke:"#CCCCCC",
                 lineDash:[5,3],
             }

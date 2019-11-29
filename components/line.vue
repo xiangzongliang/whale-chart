@@ -42,8 +42,6 @@ export default {
 
 
 
-            console.log(this.ROW_CONFIG,'23444')
-
 
 
             this.CHART = zrender.init(this.$refs[this.DOM_REF],{
