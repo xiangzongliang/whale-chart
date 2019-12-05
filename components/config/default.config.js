@@ -18,7 +18,7 @@ let default_config = {
         renderer:'canvas',
         devicePixelRatio: 2,
         width: 'auto',
-        height: 300,
+        height: 260,
         autoWidth:false, //当浏览器窗口宽度发生变化时,图表宽度自动变化 默认 false 当宽度值为auto的时候该属性生效
     },
     columns:[],
