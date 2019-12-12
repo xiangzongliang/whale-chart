@@ -10,6 +10,7 @@ let line_config = {
     selectTheme:'default',
     //轴线
     axis:{
+        inward:false, //针对左右轴的文字内容是否向内,默认打开 不支持该功能
         // [ line | bar ]
         bottom:{
             interval:{ //间隔
@@ -70,7 +71,7 @@ let line_config = {
             formatter:(val)=>{
                 return val
             },
-        },
+        }
     },
     //核心展示区域
     chart:{

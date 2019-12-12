@@ -25,21 +25,63 @@ export default {
                 selectColor:'white',//white b
                 columns:[
                     {
-                    key:'age',
+                    key:'key',
                     axis:'right',
                     line:{
                         smooth:'0'
                     }
-                }
-                ,{
-                    key:'val',
-                    type:'bar',
                 },{
                     key:'val',
-
+                    type:'bar',
+                    bar:{
+                        r:100,
+                        text:{
+                            show:true,
+                        },
+                        setStyle:(ctx)=>{
+                            //渐变的用法
+                            let col = new ctx.zrender.LinearGradient(0,0,0,1,[{
+                                offset:1,
+                                color:'#ff8800'
+                            },{
+                                offset:0.2,
+                                color:'#ff3300' 
+                            }])
+                            return {
+                                fill:col
+                            }
+                        }
+                    }
+                },{
+                    key:'key',
+                    type:'bar',
                     line:{
                         smooth:'0.3'
                     },
+                    bar:{
+                        r:100,
+                        // text:{
+                        //     // show:true,
+                        //     // style:{
+                        //     //     textFill:"#ff8800"
+                        //     // },
+                        //     formatter:(val)=>{
+                        //         return val*10000 + '万'
+                        //     },
+                        // },
+                        setStyle:(ctx)=>{
+                            if(ctx.value > 0){
+                                return {
+                                    fill:"#ff8800"
+                                }
+                            }else{
+                                return {
+                                    fill:"#33b5e5"
+                                }
+                            }
+                            
+                        }
+                    }
                 }],
                 //数据集合
                 chartData:[],
@@ -50,18 +92,31 @@ export default {
                     type:'bar',
                     line:{
                         smooth:0.3,
-                        style:{}
                     },
                     bar:{
-                       width:10,
-                        textShow:false,
-                        interval:0,
-                        style:{} 
+                        width:10,   //柱状图的宽度
+                        interval:0, //多个柱状图时候之间的间距,一个柱状图时该数据不生效
+                        r:10,       //柱状图的圆角 默认为0
+                        text:{
+                            show:false, //是否显示柱状图上面的文字
+                            formatter:(val)=>{
+                                return val
+                            },
+                            style:{
+
+                            }
+                        },
+                        style:{}, // setStyle的权限大于style的权限
+                        setStyle:(ctx)=>{
+                            return {}
+                        },
+
                     }
                 }
                  */
                 
                 axis:{
+                    inward:true,
                     bottom:{
                         interval:{ //间隔
                             type:'between',  // 'all'    'between'
@@ -69,17 +124,23 @@ export default {
                     },
                     left:{
                         // paddingLeft:55,
-                        textStyle:{},
+                        text:{
+                            show:false,
+                            style:{}
+                        },
                         formatter:(val)=>{
                             // return [(val/10000).toFixed(2),'{_name|万}'].join('\n') 
                             return (val/10000).toFixed(2) +'万'
                         },
                     },
-                    // right:{
-                    //     formatter:(val)=>{
-                    //         return val.toFixed(2)
-                    //     },
-                    // }
+                    right:{
+                        text:{
+                            show:false
+                        }
+                        // formatter:(val)=>{
+                        //     return val.toFixed(2)
+                        // },
+                    }
                 },
                 // colors:['#CCA663','#CCA663','#CCA663'],
                 // box:{
@@ -142,25 +203,25 @@ export default {
     },
     mounted(){
         // this.chartOpction.chartData = [{
-        //     key:0,
+        //     key:3,
         //     age:100,
-        //     val:null
+        //     val:21
         // },{
         //     key:0,
         //     age:100,
-        //     val:null
+        //     val:3
         // },{
-        //     key:0,
+        //     key:null,
         //     age:100,
-        //     val:null
+        //     val:56
         // },{
-        //     key:0,
+        //     key:5,
         //     age:100,
-        //     val:null
+        //     val:34
         // },{
-        //     key:0.01,
-        //     age:100,
-        //     val:null
+        //     key:8,
+        //     age:-100,
+        //     val:-54
         // }]
         this.$axios({
             method:'post',

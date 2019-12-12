@@ -2,6 +2,7 @@ let template = './template/index.html'
 module.exports = {
     index: {
         title:'whale-chart-line',
+	    // entry: './pages/index/index.js',
 	    entry: './pages/line/line.js',
 	    template: template,
         //chunks  //function(...list) | array    手动注入 chunks 支持

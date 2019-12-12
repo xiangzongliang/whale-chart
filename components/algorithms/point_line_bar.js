@@ -36,9 +36,8 @@ const point_line_bar = ({all, arr, _CORE, ROW_CONFIG, _DIFF, X_left=0, X_right=0
                 y = (_DIFF.height - _box_.top - _box_.bottom) - (val / N_max * (_DIFF.height - _box_.top - _box_.bottom)) + _box_.top
             } 
              
-            points.push([x,y,isBreak,{
-                _CORE
-            }])  
+            points.push([x,y,isBreak,arr[ai]])  
+
         }
     return points
 

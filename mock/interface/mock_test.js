@@ -8,9 +8,9 @@ module.exports = (Mock) => {
             "data|5":[{
                 'name': '@cword(2)',
                 // 'name': '@string(3)',
-                "key|5000000-90000000": 0,
-                "val|-5-5.2-2":0,
-                "pre|-100-100":0,
+                "key|-5-9": 0,
+                "val|-10-20":0,
+                "pre|-20-40":0,
                 "age|20-40":20,
                 "time":Random.date('yyyy-MM-dd')
             }]

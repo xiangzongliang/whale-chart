@@ -1,7 +1,6 @@
 import { core_line_bar } from '../algorithms/core'
 import { arr_zoom } from '../algorithms/arr_zoom'
 import { point_line_bar } from '../algorithms/point_line_bar'
-import { axis_grid } from '../algorithms/axis_grid'
 
 
 
@@ -266,6 +265,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
                     }))
 
                     _DIFF.all_points.push({
+                        _CORE : _CORE_left,
                         points:left_point,
                         type,
                         axis,
@@ -285,6 +285,7 @@ let line_bar_render = ({ zrender, CHART, ROW_CONFIG, REFS, frequency }) =>{
                     }))
 
                     _DIFF.all_points.push({
+                        _CORE : _CORE_right,
                         points:right_point,
                         type,
                         axis,

@@ -10,26 +10,39 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
         _box_ = ROW_CONFIG._box_,
         text_max_length = 0,
         formatter = ROW_CONFIG.axis.left.formatter,
-        x = 0,
-        render_left_arr = []
+        x = _box_.left,
+        render_left_arr = [],
+        chart_interval = dpr(ROW_CONFIG.chart.interval), //特殊值
+        inward = ROW_CONFIG.axis.inward   //Boolean 是否要把轴的文字放在内侧 默认true
+
 
 
 
         if(ROW_CONFIG.axis.left.text.show === true){
-            
+            //内侧轴显示的相关配置
+            let inward_style = {},
+                inward_x = 0
+
             let render_text = ({text,y}) => {
+                if(inward === true){
+                    inward_style = {
+                        textAlign: "left",
+                        textVerticalAlign:"bottom",
+                        textPosition:[0,-5]
+                    }
+                    inward_x = chart_interval / 2
+                }
                 let left_axis = new zrender.Rect({
                     shape:{
-                        x: x,
+                        x: x + inward_x,
                         y: y,
                         width:0,
                         height:0,
                     },
                     style: Object.assign({},ROW_CONFIG.axis.left.text.style,{
-                        text:text
-                    },{
+                        text:text,
                         fontSize: dpr(ROW_CONFIG.axis.left.text.style.fontSize)
-                    }),
+                    },inward_style),
                     zlevel:0
                 })
                 RENDER_left_axis.add(left_axis)
@@ -81,7 +94,7 @@ let RD_left_axis = ({ zrender, _CORE, ROW_CONFIG }) => {
             }
 
             //通过文字的长度计算向右偏移的位置
-            x = text_max_length * dpr(ROW_CONFIG.axis.left.text.style.fontSize) / 2 + ROW_CONFIG.axis.left.paddingLeft + _box_.left
+            x = inward === true ? _box_.left : text_max_length * dpr(ROW_CONFIG.axis.left.text.style.fontSize) / 2 + ROW_CONFIG.axis.left.paddingLeft + _box_.left
             for(let lai in render_left_arr){
                 render_text(render_left_arr[lai])
             }
@@ -110,25 +123,38 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
         _box_ = ROW_CONFIG._box_,
         text_max_length = 0,
         formatter = ROW_CONFIG.axis.right.formatter,
-        x = 0,
-        render_left_arr = []
+        x = _DIFF.width - _box_.right,
+        render_left_arr = [],
+        chart_interval = dpr(ROW_CONFIG.chart.interval), //特殊值
+        inward = ROW_CONFIG.axis.inward   //Boolean 是否要把轴的文字放在内侧 默认true
 
 
         if(ROW_CONFIG.axis.right.text.show === true){
+            //内侧轴显示的相关配置
+            let inward_style = {},
+                inward_x = 0
+
+            if(inward === true){
+                inward_style = {
+                    textAlign: "right",
+                    textVerticalAlign:"bottom",
+                    textPosition:[0,-5]
+                }
+                inward_x = chart_interval / 2
+            }
 
             let render_text = ({text,y}) => {
                 let left_axis = new zrender.Rect({
                     shape:{
-                        x: x,
+                        x: x - inward_x,
                         y: y,
                         width:0,
                         height:0,
                     },
                     style: Object.assign({},ROW_CONFIG.axis.right.text.style,{
-                        text:text
-                    },{
+                        text:text,
                         fontSize: dpr(ROW_CONFIG.axis.right.text.style.fontSize)
-                    }),
+                    },inward_style),
                     zlevel:0
                 })
                 RENDER_right_axis.add(left_axis)
@@ -173,7 +199,7 @@ let RD_right_axis = ({ zrender, _CORE, ROW_CONFIG, _DIFF }) => {
             }
 
             //通过文字的长度计算向右偏移的位置
-            x = _DIFF.width - (text_max_length * dpr(ROW_CONFIG.axis.right.text.style.fontSize) / 2 + ROW_CONFIG.axis.right.paddingRight ) - _box_.right
+            x = inward === true ? _DIFF.width - _box_.right : _DIFF.width - (text_max_length * dpr(ROW_CONFIG.axis.right.text.style.fontSize) / 2 + ROW_CONFIG.axis.right.paddingRight ) - _box_.right
             for(let lai in render_left_arr){
                 render_text(render_left_arr[lai])
             }

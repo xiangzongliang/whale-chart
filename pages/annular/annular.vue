@@ -10,11 +10,14 @@ export default {
         return {
             chartOpction:{
                 columns:[{
-                    key:'age'
+                    key:'age',
+                    innerR:20, //内半径
+                    extR:30, //外半径
+                    deviation:[0,0],    //圆心偏离 [x,y]
                 }],
                 chartData:[{
                     key:0,
-                    age:100,
+                    age:40,
                     val:null
                 },{
                     key:0,
@@ -22,15 +25,15 @@ export default {
                     val:null
                 },{
                     key:0,
-                    age:100,
+                    age:40,
                     val:null
                 },{
                     key:0,
-                    age:100,
+                    age:50,
                     val:null
                 },{
                     key:0.01,
-                    age:100,
+                    age:50,
                     val:null
                 }]
             }
