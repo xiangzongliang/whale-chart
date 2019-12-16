@@ -6,7 +6,6 @@ import zrender from 'zrender'
 import { random } from './algorithms/random'
 import { default_config } from './config/default.config'
 import { annilar_config } from './config/annular.config'
-
 //渲染
 import { annular_render } from './render/annular.render'
 export default {

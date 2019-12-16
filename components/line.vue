@@ -43,7 +43,6 @@ export default {
 
 
 
-
             this.CHART = zrender.init(this.$refs[this.DOM_REF],{
                 renderer:           this.ROW_CONFIG.init.renderer,
                 devicePixelRatio:   this.ROW_CONFIG.init.devicePixelRatio,
