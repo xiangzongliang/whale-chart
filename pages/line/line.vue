@@ -202,27 +202,27 @@ export default {
         }
     },
     mounted(){
-        // this.chartOpction.chartData = [{
-        //     key:3,
-        //     age:100,
-        //     val:21
-        // },{
-        //     key:0,
-        //     age:100,
-        //     val:3
-        // },{
-        //     key:null,
-        //     age:100,
-        //     val:56
-        // },{
-        //     key:5,
-        //     age:100,
-        //     val:34
-        // },{
-        //     key:8,
-        //     age:-100,
-        //     val:-54
-        // }]
+        this.chartOpction.chartData = [{
+            key:3,
+            age:100,
+            val:21
+        },{
+            key:0,
+            age:100,
+            val:3
+        },{
+            key:null,
+            age:100,
+            val:56
+        },{
+            key:5,
+            age:100,
+            val:34
+        },{
+            key:8,
+            age:-100,
+            val:-54
+        }]
         this.$axios({
             method:'post',
             url:'/api/chart',
